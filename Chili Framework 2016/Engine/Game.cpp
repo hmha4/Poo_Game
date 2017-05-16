@@ -125,10 +125,13 @@ void Game::UpdateModel()
 		y = 5;
 	}
 
+	
+
 	controlIsPressed = false;
-	if (x > 200 && x < 300)
+	if (x + 5 > 100 && x  - 5< 110)
 	{
-		controlIsPressed = true;
+		if(y + 5> 100 && y - 5< 110)
+			controlIsPressed = true;
 	}
 	
 
@@ -203,4 +206,44 @@ void Game::ComposeFrame()
 		gfx.PutPixel(x, y + 5, 255, 255, 255);
 	}
 	
+	gfx.PutPixel(100, 100, 0, 255, 255);
+	gfx.PutPixel(101, 100, 0, 255, 255);
+	gfx.PutPixel(102, 100, 0, 255, 255);
+	gfx.PutPixel(103, 100, 0, 255, 255);
+	gfx.PutPixel(104, 100, 0, 255, 255);
+	gfx.PutPixel(105, 100, 0, 255, 255);
+	gfx.PutPixel(106, 100, 0, 255, 255);
+	gfx.PutPixel(107, 100, 0, 255, 255);
+	gfx.PutPixel(108, 100, 0, 255, 255);
+	gfx.PutPixel(109, 100, 0, 255, 255);
+	gfx.PutPixel(100, 110, 0, 255, 255);
+	gfx.PutPixel(101, 110, 0, 255, 255);
+	gfx.PutPixel(102, 110, 0, 255, 255);
+	gfx.PutPixel(103, 110, 0, 255, 255);
+	gfx.PutPixel(104, 110, 0, 255, 255);
+	gfx.PutPixel(105, 110, 0, 255, 255);
+	gfx.PutPixel(106, 110, 0, 255, 255);
+	gfx.PutPixel(107, 110, 0, 255, 255);
+	gfx.PutPixel(108, 110, 0, 255, 255);
+	gfx.PutPixel(109, 110, 0, 255, 255);
+	gfx.PutPixel(100, 100, 0, 255, 255);
+	gfx.PutPixel(100, 101, 0, 255, 255);
+	gfx.PutPixel(100, 102, 0, 255, 255);
+	gfx.PutPixel(100, 103, 0, 255, 255);
+	gfx.PutPixel(100, 104, 0, 255, 255);
+	gfx.PutPixel(100, 105, 0, 255, 255);
+	gfx.PutPixel(100, 106, 0, 255, 255);
+	gfx.PutPixel(100, 107, 0, 255, 255);
+	gfx.PutPixel(100, 108, 0, 255, 255);
+	gfx.PutPixel(100, 109, 0, 255, 255);
+	gfx.PutPixel(110, 100, 0, 255, 255);
+	gfx.PutPixel(110, 101, 0, 255, 255);
+	gfx.PutPixel(110, 102, 0, 255, 255);
+	gfx.PutPixel(110, 103, 0, 255, 255);
+	gfx.PutPixel(110, 104, 0, 255, 255);
+	gfx.PutPixel(110, 105, 0, 255, 255);
+	gfx.PutPixel(110, 106, 0, 255, 255);
+	gfx.PutPixel(110, 107, 0, 255, 255);
+	gfx.PutPixel(110, 108, 0, 255, 255);
+	gfx.PutPixel(110, 109, 0, 255, 255);
 }
