@@ -1,5 +1,5 @@
 #include <Windows.h>
-#include "GraphicsDevice.h"
+#include "Game.h"
 
 //Prototypes for the GenerateWindow function, otherwise WinMain cannot call GenerateWindow
 bool GenerateWindow(HINSTANCE hInstance, int nCmdShow, LPCSTR className, LPCSTR windowTitle, int width, int height, HWND& hWnd);
@@ -8,9 +8,7 @@ bool GenerateWindow(HINSTANCE hInstance, int nCmdShow, LPCSTR className, LPCSTR 
 //Another prototype
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-//UPDATE and DRAW functions
-void Update(float gameTime);
-void Draw(GraphicsDevice *gDevice, float gameTime);
+Game *game;
 
 //WinMain function, set up window and message loop
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -20,30 +18,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	if (GenerateWindow(hInstance, nCmdShow, "Direct3D", "Initializing Direct3D Example", 1280, 720, hWnd))
 	{
 		MSG msg;
-		GraphicsDevice *gDevice = new GraphicsDevice();
-		gDevice->Initialize(hWnd, true);
+		game = new Game();
 
-		while (true)
+		if (game->Initialize(hWnd))
 		{
-			while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+			while (true)
 			{
-				TranslateMessage(&msg);
+				while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+				{
+					TranslateMessage(&msg);
 
-				DispatchMessage(&msg);
+					DispatchMessage(&msg);
+				}
+
+				if (msg.message == WM_QUIT) break;
+				else
+				{
+					game->Run();
+				}
 			}
 
-			if (msg.message == WM_QUIT) break;
-			else
-			{
-				Update(0.0f);
 
-				Draw(gDevice, 0.0f);
-			}
+			delete game;
+
+			return msg.wParam;
+
 		}
-
-		delete gDevice;
-
-		return msg.wParam;
 	}
 
 	return 0;
@@ -97,21 +97,4 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 	}
 
 	return DefWindowProc(hWnd, message, wParam, lParam);
-}
-
-void Update(float gameTime)
-{
-	//Update our sprites and other game logic
-}
-
-void Draw(GraphicsDevice *gDevice, float gameTime)
-{
-	//Simple RGB value for the background so use XRGB instead of ARGB
-	gDevice->Clear(D3DCOLOR_XRGB(0, 100, 100));
-	gDevice->Begin();
-
-	//Draw logic here.
-
-	gDevice->End();
-	gDevice->Present();
 }

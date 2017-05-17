@@ -5,7 +5,7 @@ GraphicsDevice::GraphicsDevice()
 	//Constructor
 }
 
-void GraphicsDevice::Initialize(HWND hwnd, bool windowed)
+bool GraphicsDevice::Initialize(HWND hwnd, bool windowed)
 {
 	//Create Direct 3D Pointer
 	direct3d = Direct3DCreate9(D3D_SDK_VERSION);
@@ -16,14 +16,18 @@ void GraphicsDevice::Initialize(HWND hwnd, bool windowed)
 	presentationParams.SwapEffect = D3DSWAPEFFECT_DISCARD; //fastest
 	presentationParams.hDeviceWindow = hwnd; //use the window we set up
 
-											 //create the device
-											 //D3DADAPTER_DEFAULT = Primary display adapter (default graphics card)
-											 //D3DDEVTYPE_HAL = Hardware rasterization
-											 //D3DCREATE_MIXED_VERTEXPROCESSING = Uses both hardware and software for 3D calculations
-	direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
+	//create the device
+	//D3DADAPTER_DEFAULT = Primary display adapter (default graphics card)
+	//D3DDEVTYPE_HAL = Hardware rasterization
+	//D3DCREATE_MIXED_VERTEXPROCESSING = Uses both hardware and software for 3D calculations
+	if(!SUCCEEDED(direct3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
 		hwnd, D3DCREATE_MIXED_VERTEXPROCESSING, &presentationParams,
-		&device);
+		&device)))
+	{
+		return false;
+	}
 
+	return true;
 }
 
 void GraphicsDevice::Clear(D3DCOLOR color)

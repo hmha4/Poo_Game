@@ -31,11 +31,12 @@
     <ProjectGuid>{D3D09003-96D0-4629-88B8-122C0256058C}</ProjectGuid>
     <RootNamespace>Matrices49860489</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|X64'" Label="Configuration">
@@ -375,6 +376,7 @@
     <None Include="DXUT\Optional\directx.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameSprite.cpp" />
     <ClCompile Include="GraphicsDevice.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -382,6 +384,7 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game.h" />
     <ClInclude Include="GameSprite.h" />
     <ClInclude Include="GraphicsDevice.h" />
     <CLInclude Include="resource.h" />

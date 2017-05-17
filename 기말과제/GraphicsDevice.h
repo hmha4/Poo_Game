@@ -10,7 +10,7 @@ public:
 	~GraphicsDevice();
 
 	//Direct3D Function
-	void Initialize(HWND hWnd, bool windowed);
+	bool Initialize(HWND hWnd, bool windowed);
 	void Clear(D3DCOLOR color);
 	void Begin();
 	void End();

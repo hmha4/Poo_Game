@@ -21,7 +21,7 @@ private:
 	LPDIRECT3DTEXTURE9 tex;
 	LPD3DXSPRITE sprite;
 
-	D3DVECTOR position;
+	D3DXVECTOR3 position;
 	D3DCOLOR color;
 	bool initialized;
 };
