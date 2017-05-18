@@ -63,6 +63,10 @@ bool GameSprite::IsInitialized()
 void GameSprite::Update(float gameTime)
 {
 	//Update logic here.
+	position.x += velocity.x;
+	position.y += velocity.y;
+
+	//No need to update Z since it is 2D
 }
 
 void GameSprite::Draw(float gameTime)

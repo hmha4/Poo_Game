@@ -7,6 +7,9 @@
 class GameSprite
 {
 public:
+	//Attributes
+	D3DXVECTOR3 velocity;
+
 	//持失切, 社瑚切
 	GameSprite();
 	GameSprite(float x, float y);

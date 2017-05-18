@@ -15,11 +15,14 @@ bool Game::Initialize(HWND hWnd)
 	}
 
 	player = new GameSprite(100, 200);
-	if (!player->Initialize(gDevice->device, "Texture/Player/PlayerPaper.png", 110, 112))
+	if (!player->Initialize(gDevice->device, "Texture/Player/PlayerPaper.png", 50, 52))
 	{
 		MessageBox(NULL, "Error in Player Texture Initialize.", NULL, NULL);
 		return false;
 	}
+
+	player->velocity.x = 2;
+	player->velocity.y = 1;
 
 	return true;
 }
@@ -36,6 +39,7 @@ void Game::Run()
 void Game::Update(float gameTime)
 {
 	//Update our sprites and other game logic
+	if (player) player->Update(gameTime);
 }
 
 void Game::Draw(float gameTime)
