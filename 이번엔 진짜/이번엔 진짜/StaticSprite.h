@@ -3,9 +3,12 @@
 
 class StaticSprite
 {
+	void CreateTexture(char * fileName);
+
+protected:
 	LPDIRECT3DTEXTURE9 m_textures;
 	RECT m_rect;
-	void CreateTexture(char * fileName);
+	
 
 public:
 	StaticSprite();
@@ -15,9 +18,9 @@ public:
 	//stationary background
 	void Render();
 	//moveable(parallax) backgrounds
-	virtual void Render(D3DXVECTOR3 Position);
+	void Render(D3DXVECTOR3 Position);
 	//mosly the ground
-	void Render(D3DXVECTOR3 Position, RECT rect);
+	virtual void Render(D3DXVECTOR3 Position, RECT rect);
 
 	//Getter
 	const RECT GetRect() const { return m_rect; }

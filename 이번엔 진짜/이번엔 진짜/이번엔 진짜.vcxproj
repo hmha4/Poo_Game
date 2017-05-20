@@ -147,6 +147,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimatedSprite.h" />
     <ClInclude Include="DXManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StaticSprite.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="이번엔 진짜.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimatedSprite.cpp" />
     <ClCompile Include="DXManager.cpp" />
     <ClCompile Include="StaticSprite.cpp" />
     <ClCompile Include="stdafx.cpp">
