@@ -1,8 +1,12 @@
 #pragma once
-
 #include <d3dx9.h>
 
+//#pragma comment ( lib, "d3d9.lib" )
+//#pragma comment ( lib, "d3dx9.lib" )
+
 #define MAX_TEXTURES 250
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
 
 class DXManager
 {

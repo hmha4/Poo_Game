@@ -25,10 +25,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	HWND hWnd;
 	hWnd = InitInstance(hInstance, nCmdShow);
-    if (!hWnd)
+    if (g_DXManager.InitializeDirectX(hWnd) && !g_DXManager.CreateSprite() || !hWnd)
     {
         return FALSE;
     }
+	else //Initialize------------------------
+	{
+		g_DXManager.InitializeDirectX(hWnd);
+		g_DXManager.CreateSprite();
+	}
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MY));
 
@@ -186,5 +191,11 @@ void Update(float dt)
 
 void Render()
 {
+	if (SUCCEEDED(g_DXManager.BegineScene()))
+	{
+		g_DXManager.StartScene();
+		//Draw stuff-------------
 
+		g_DXManager.EndScene();
+	}
 }
