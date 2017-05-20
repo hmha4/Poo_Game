@@ -33,6 +33,9 @@
     <ClInclude Include="DXManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="StaticSprite.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -42,6 +45,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="DXManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticSprite.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
