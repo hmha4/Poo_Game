@@ -19,8 +19,7 @@ public:
 	void Render();
 	//moveable(parallax) backgrounds
 	void Render(D3DXVECTOR3 Position);
-	//mosly the ground
-	virtual void Render(D3DXVECTOR3 Position, RECT rect);
+	
 
 	//Getter
 	const RECT GetRect() const { return m_rect; }

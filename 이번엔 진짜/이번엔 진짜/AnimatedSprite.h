@@ -20,7 +20,7 @@ public:
 
 	virtual void Initialize(char * fileName);
 	void Update(float dt);
-	virtual void Render(D3DXVECTOR3 Position, RECT rect);
+	void Render(D3DXVECTOR3 Position, RECT rect);
 	
 	//Getters
 	const RECT GetRect() const { return m_rect; }

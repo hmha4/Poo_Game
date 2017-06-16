@@ -33,7 +33,3 @@ void StaticSprite::Render(D3DXVECTOR3 Position)
 	g_DXManager.DrawSprite(m_textures, Position);
 }
 
-void StaticSprite::Render(D3DXVECTOR3 Position, RECT rect)
-{
-	g_DXManager.DrawSprite(m_textures, rect, Position);
-}
