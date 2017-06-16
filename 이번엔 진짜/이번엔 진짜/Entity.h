@@ -15,6 +15,8 @@ protected:
 	void SetID(int ID) { m_ID = ID; }
 
 public:
+	friend class EntityManager;
+
 	void Initialize(int width, int height);
 	void Update(float dt);
 	void Render(D3DXVECTOR3 Position);
