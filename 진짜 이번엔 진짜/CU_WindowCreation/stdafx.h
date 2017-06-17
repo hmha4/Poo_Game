@@ -12,6 +12,7 @@
 #define SAFE_RELEASE(x) if( x ) { (x)->Release(); (x) = NULL; }
 #define SAFE_DELETE(x) if( x ) { delete(x); (x) = NULL; }
 #define SAFE_DELETE_ARRAY(x) if( x ) { delete [] (x); (x) = NULL; }
+#define SHOWERROR(s, f, l) char buf[1024]; sprintf( buf, "File: %s\nLine: %d\n%s", f, l, s); MessageBox( 0, buf, "Error", 0);
 
 // Windows Header Files:
 #include <windows.h>
