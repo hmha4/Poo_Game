@@ -315,6 +315,3 @@ LRESULT CALLBACK CFramework::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-CFramework::~CFramework()
-{
-}
