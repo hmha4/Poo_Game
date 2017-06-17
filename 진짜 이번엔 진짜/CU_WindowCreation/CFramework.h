@@ -24,9 +24,33 @@ public:
 
 class CFramework
 {
+private:
+	LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM, LPARAM lParam);
+	void OnCreateDevice();
+	void OnResetDevice();
+	void OnLostDevice();
+	void OnDestroyDevice();
+	void OnUpdateFrame();
+	void OnRenderFrame();
+
+	HWND m_hWnd;
+	HINSTANCE m_hInstance;
+	BOOL m_active;
+	int m_windowWidth;
+	int m_windowHeight;
+	WINDOWPLACEMENT m_wp;
+
+	CGraphics* m_pGraphics;
+	CBaseApp* m_pGameApp;
+
 public:
-	CFramework();
-	~CFramework();
+	CFramework(CBaseApp* pGameApp);
+	~CFramework() { Release(); }
+	BOOL Initialize(char* title, HINSTANCE hInstance, int width, int height, BOOL windowed = TRUE);
+	void Run();
+	void Release();
+	void ToggleFullscreen();
+	static LRESULT CALLBACK StaticWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 };
 
 #endif // !CFRAMEWORK_H
