@@ -40,6 +40,40 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR cmdLine
     ShowWindow( hWnd, SW_SHOW );
     UpdateWindow( hWnd );
 
+	//-------------------Create Direct3D9 Object----------------------
+	//The Direct3D object lets us configure the application based on the 
+	//capabilities of the user¡¯s video card.
+	//------------------------------------------------------------------
+	LPDIRECT3D9 pD3D9 = Direct3DCreate9(D3D_SDK_VERSION);
+	if (!pD3D9)
+	{
+		MessageBox(0, "Direct3DCreate9() - Failed", 0, 0);
+		return 0;
+	}
+
+	//---------------Fill out the presentation parameters----------------
+	//This structure is used to specify how DirectX is going to behave.
+	//---------------------------------------------------------------------
+	D3DPRESENT_PARAMETERS D3Dpp;
+	ZeroMemory(&D3Dpp, sizeof(D3Dpp));
+	D3Dpp.Windowed = TRUE;
+	D3Dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+
+	//------------------Create the Direct3D Device-----------------------
+	//If the creation was a success, DirectX Graphics is now initialized 
+	//and there is much rejoicing. If device creation fails, we alert the 
+	//user and quit the program.
+	//------------------------------------------------------------------
+	LPDIRECT3DDEVICE9 pD3DDevice = NULL;
+	if (FAILED(pD3D9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
+		D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3Dpp,
+		&pD3DDevice)))
+	{
+		MessageBox(0, "CreateDevice() - Failed", 0, 0);
+		SAFE_RELEASE(pD3D9);
+		return 0;
+	}
+
     // Main loop
     MSG msg;
     while ( 1 ) 
@@ -56,9 +90,21 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR cmdLine
         } 
         else 
         {
+			//To Render the scene, we first clear the surface we are drawing
+			//on, called the back buffer
+			pD3DDevice->Clear(0, 0, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 100), 1.0f, 0);
+			pD3DDevice->BeginScene();
             // Render a frame
+
+			//When done rendering, we need to call EndScene
+			pD3DDevice->EndScene();
+			pD3DDevice->Present(0, 0, 0, 0);
         } 
     }
+
+	//Give back resources
+	SAFE_RELEASE(pD3DDevice);
+	SAFE_RELEASE(pD3D9);
     
 	return 0;
 }
