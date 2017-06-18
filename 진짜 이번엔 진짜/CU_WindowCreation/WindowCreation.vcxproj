@@ -98,6 +98,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="CVertexBuffer.cpp" />
+    <ClCompile Include="CWorldTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGraphics.h" />
@@ -107,6 +108,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="CVertexBuffer.h" />
+    <ClInclude Include="CWorldTransform.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
