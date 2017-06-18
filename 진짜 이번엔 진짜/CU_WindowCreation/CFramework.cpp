@@ -184,6 +184,11 @@ void CFramework::OnRenderFrame()
 			}
 		}
 	}
+
+	if (m_pGameApp != NULL)
+	{
+		m_pGameApp->OnRenderFrame(m_pGraphics->GetDevice());
+	}
 }
 
 //Toggles between fullscreen and windowed mode.
@@ -313,5 +318,42 @@ LRESULT CALLBACK CFramework::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
 			return 0;
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
+}
+
+/* * * * * * * * * * ** * * * * * * * * * * * * * * * * * * * * * * *
+Summary: Gets the current fill mode.
+Returns: Fillmode from the D3DFILLMODE enumeration
+* * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * * */
+DWORD CFramework::GetFillMode()
+{
+	return m_fillMode;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Summary: Gets the current client width.
+Returns: Width
+* * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * */
+int CFramework::GetWidth()
+{
+	if (m_pGraphics->Windowed)
+	{
+		return m_windowWidth;
+	}
+
+	return m_fullscreenWidth;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Summary: Gets the current client height.
+Returns: Height
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+int CFramework::GetHeight()
+{
+	if (m_pGraphics->Windowed)
+	{
+		return m_windowHeight;
+	}
+
+	return m_fullscreenHeight;
 }
 

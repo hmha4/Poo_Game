@@ -1,6 +1,18 @@
 ﻿#include "stdafx.h"
 #include "GameApp.h"
 
+struct CUSTOMVERTEX
+{
+	float x, y, z; //  Position in 3D space
+	DWORD color;   //  Color
+};
+
+CUSTOMVERTEX g_triangle[] = 
+{
+	{ -2.0f, -2.0f, 5.0f, D3DCOLOR_XRGB(255,   0,   0) }, // Bottom left vertex
+	{ 0.0f,  2.0f, 5.0f, D3DCOLOR_XRGB(0,   0, 255) }, // Top vertex
+	{ 2.0f, -2.0f, 5.0f, D3DCOLOR_XRGB(0, 255,   0) }  // Bottom right vertex
+};
 
 CGameApp::CGameApp()
 {
@@ -59,6 +71,33 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnResetDevice(LPDIRECT3DDEVICE9 pDevice)
 {
+	D3DVERTEXELEMENT9 vertexDeclaration[] =
+	{
+		{0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
+		{0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
+		D3DDECL_END()
+	};
+
+	LPDIRECT3DVERTEXDECLARATION9 _vertexDeclaration = 0;
+	pDevice->CreateVertexDeclaration(vertexDeclaration, &_vertexDeclaration);
+	pDevice->SetVertexDeclaration(_vertexDeclaration);
+
+	//Set up the render states
+	pDevice->SetRenderState(D3DRS_FILLMODE, m_pFramework->GetFillMode());
+	pDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+	//Set the world and view matrices
+	D3DXMATRIX identity;
+	D3DXMatrixIdentity(&identity);
+	pDevice->SetTransform(D3DTS_WORLD, &identity);
+	pDevice->SetTransform(D3DTS_VIEW, &identity);
+
+	//Set the projection matrix
+	D3DXMATRIX projection;
+	float aspect = (float)m_pFramework->GetWidth() / (float)m_pFramework->GetHeight();
+	D3DXMatrixPerspectiveFovLH(&projection, D3DX_PI / 3, aspect, 1.0f, 1000.0f);
+	pDevice->SetTransform(D3DTS_PROJECTION, &projection);
 }
 
 /* * * * * * * * * * * * * * * ** * * * * * * * * * * * * * * * * *
@@ -105,6 +144,7 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice)
 	pDevice->BeginScene();
 
 	//Render scene here
+	pDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 1, g_triangle, sizeof(CUSTOMVERTEX));
 
 	pDevice->EndScene();
 	pDevice->Present(0, 0, 0, 0);

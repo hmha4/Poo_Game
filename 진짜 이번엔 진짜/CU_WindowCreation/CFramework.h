@@ -38,7 +38,10 @@ private:
 	BOOL m_active;
 	int m_windowWidth;
 	int m_windowHeight;
+	int m_fullscreenWidth;
+	int m_fullscreenHeight;
 	WINDOWPLACEMENT m_wp;
+	DWORD m_fillMode;
 
 	CGraphics* m_pGraphics;
 	CBaseApp* m_pGameApp;
@@ -51,6 +54,9 @@ public:
 	void Release();
 	void ToggleFullscreen();
 	static LRESULT CALLBACK StaticWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	DWORD GetFillMode();
+	int GetWidth();
+	int GetHeight();
 };
 
 #endif // !CFRAMEWORK_H
