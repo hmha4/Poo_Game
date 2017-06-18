@@ -7,11 +7,31 @@ struct CUSTOMVERTEX
 	DWORD color;   //  Color
 };
 
-CUSTOMVERTEX g_triangle[] = 
+//CUSTOMVERTEX g_triangle[] = 
+//{
+//	{ -2.0f, -2.0f, 5.0f, D3DCOLOR_XRGB(255,   0,   0) }, // Bottom left vertex
+//	{ 0.0f,  2.0f, 5.0f, D3DCOLOR_XRGB(0,   0, 255) }, // Top vertex
+//	{ 2.0f, -2.0f, 5.0f, D3DCOLOR_XRGB(0, 255,   0) }  // Bottom right vertex
+//};
+
+CUSTOMVERTEX g_4Vertices[] = 
 {
-	{ -2.0f, -2.0f, 5.0f, D3DCOLOR_XRGB(255,   0,   0) }, // Bottom left vertex
-	{ 0.0f,  2.0f, 5.0f, D3DCOLOR_XRGB(0,   0, 255) }, // Top vertex
-	{ 2.0f, -2.0f, 5.0f, D3DCOLOR_XRGB(0, 255,   0) }  // Bottom right vertex
+	{ -1.0f, -1.0f, 5.0f, D3DCOLOR_XRGB(255, 0, 0) }, // 0 
+	{ -1.0f, 1.0f, 5.0f, D3DCOLOR_XRGB(255, 255, 0) }, // 1 
+	{ 1.0f, -1.0f, 5.0f, D3DCOLOR_XRGB(0, 255, 0) }, // 2 
+	{ 1.0f, 1.0f, 5.0f, D3DCOLOR_XRGB(0, 0, 255) } // 3
+};
+
+USHORT g_indices[] = { 0, 1, 2, 1, 3, 2 };
+
+CUSTOMVERTEX g_6Vertices[] = 
+{
+	{ -1.0f, -1.0f, 5.0f, D3DCOLOR_XRGB(255, 0, 0) },
+	{ -1.0f, 1.0f, 5.0f, D3DCOLOR_XRGB(255, 255, 0) },
+	{ 1.0f, -1.0f, 5.0f, D3DCOLOR_XRGB(0, 255, 0) },
+	{ -1.0f, 1.0f, 5.0f, D3DCOLOR_XRGB(255, 0, 255) },
+	{ 1.0f, 1.0f, 5.0f, D3DCOLOR_XRGB(0, 0, 255) },
+	{ 1.0f, -1.0f, 5.0f, D3DCOLOR_XRGB(0, 255, 255) }
 };
 
 CGameApp::CGameApp()
@@ -56,7 +76,14 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void CGameApp::OnCreateDevice(LPDIRECT3DDEVICE9 pDevice)
 {
+	m_VB4.CreateBuffer(pDevice, 4, D3DFVF_XYZ | D3DFVF_DIFFUSE, sizeof(CUSTOMVERTEX));
+	m_VB4.SetData(4, g_4Vertices);
+	m_IB.CreateBuffer(pDevice, 6, D3DFMT_INDEX16);
+	m_IB.SetData(6, g_indices);
+	m_VB4.SetIndexBuffer(&m_IB);
 
+	m_VB6.CreateBuffer(pDevice, 6, D3DFVF_XYZ | D3DFVF_DIFFUSE, sizeof(CUSTOMVERTEX));
+	m_VB6.SetData(6, g_6Vertices);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
@@ -122,6 +149,9 @@ all D3DPOOL_MANAGED resources.
 * * * * * * * * * * ** * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnDestroyDevice()
 {
+	m_VB6.Release();
+	m_VB4.Release();
+	m_IB.Release();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -144,7 +174,16 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice)
 	pDevice->BeginScene();
 
 	//Render scene here
-	pDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 1, g_triangle, sizeof(CUSTOMVERTEX));
+	D3DXMATRIX world;
+	D3DXMatrixTranslation(&world, -1.5f, 1.0f, 0.0f);
+	pDevice->SetTransform(D3DTS_WORLD, &world);
+	m_VB4.Render(pDevice, 2, D3DPT_TRIANGLELIST);
+
+	D3DXMatrixTranslation(&world, 1.5f, -1.0f, 0.0f);
+	pDevice->SetTransform(D3DTS_WORLD, &world);
+	m_VB6.Render(pDevice, 2, D3DPT_TRIANGLELIST);
+	/*pDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 1, g_triangle, sizeof(CUSTOMVERTEX));*/
+
 
 	pDevice->EndScene();
 	pDevice->Present(0, 0, 0, 0);

@@ -4,11 +4,16 @@
 
 #include "stdafx.h"
 #include "CFramework.h"
+#include "CVertexBuffer.h"
+#include "CIndexBuffer.h"
 
 class CGameApp : public CBaseApp
 {
 private:
 	CFramework* m_pFramework;
+	CVertexBuffer m_VB4;
+	CVertexBuffer m_VB6;
+	CIndexBuffer m_IB;
 public:
 	CGameApp();
 	~CGameApp() { Release(); }

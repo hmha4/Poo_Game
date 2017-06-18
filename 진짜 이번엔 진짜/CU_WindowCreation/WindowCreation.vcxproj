@@ -92,17 +92,21 @@
     <ClCompile Include="CGraphics.cpp" />
     <ClCompile Include="CFramework.cpp" />
     <ClCompile Include="GameApp.cpp" />
+    <ClCompile Include="CIndexBuffer.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="CVertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGraphics.h" />
     <ClInclude Include="CFramework.h" />
     <ClInclude Include="GameApp.h" />
+    <ClInclude Include="CIndexBuffer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="CVertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
