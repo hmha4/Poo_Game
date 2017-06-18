@@ -7,6 +7,7 @@ CFramework::CFramework(CBaseApp* pGameApp)
 	m_pGameApp = pGameApp;
 	m_active = TRUE;
 	m_pGraphics = new CGraphics();
+	m_fillMode = D3DFILL_SOLID;
 }
 
 void CFramework::Release()
@@ -72,7 +73,8 @@ BOOL CFramework::Initialize(char* title, HINSTANCE hInstance, int width, int hei
 	{
 		return FALSE;
 	}
-
+	m_fullscreenWidth = m_pGraphics->GetDisplayMode()->Width;
+	m_fullscreenHeight = m_pGraphics->GetDisplayMode()->Height;
 
 	OnCreateDevice();
 	OnResetDevice();
@@ -238,6 +240,15 @@ void CFramework::ToggleFullscreen()
 	{
 		ShowWindow(m_hWnd, SW_SHOW);
 	}
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Summary: Toggles between wireframe and solid fill modes
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void CFramework::ToggleWireframe()
+{
+	m_fillMode = (m_fillMode == D3DFILL_SOLID) ? D3DFILL_WIREFRAME : D3DFILL_SOLID;
+	m_pGraphics->GetDevice()->SetRenderState(D3DRS_FILLMODE, m_fillMode);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

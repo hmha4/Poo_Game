@@ -25,6 +25,7 @@ public:
 	BOOL Reset();
 	LPDIRECT3D9       GetD3D() { return m_pD3D9; }
 	LPDIRECT3DDEVICE9 GetDevice() { return m_pDevice; }
+	D3DDISPLAYMODE*   GetDisplayMode() { return &m_displayMode; }
 
 	BOOL Windowed;
 };

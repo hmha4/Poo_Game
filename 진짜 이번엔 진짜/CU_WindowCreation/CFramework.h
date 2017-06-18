@@ -53,6 +53,7 @@ public:
 	void Run();
 	void Release();
 	void ToggleFullscreen();
+	void ToggleWireframe();
 	static LRESULT CALLBACK StaticWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	DWORD GetFillMode();
 	int GetWidth();
