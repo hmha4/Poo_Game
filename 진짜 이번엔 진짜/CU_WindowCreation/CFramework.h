@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "CGraphics.h"
+#include "CTimer.h"
 
 //---------------------------------------------------------
 //Interface that the main game application must implement
@@ -17,8 +18,8 @@ public:
 	virtual void OnResetDevice(LPDIRECT3DDEVICE9 pDevice) = 0;
 	virtual void OnLostDevice() = 0;
 	virtual void OnDestroyDevice() = 0;
-	virtual void OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice) = 0;
-	virtual void OnRenderFrame(LPDIRECT3DDEVICE9 pDevice) = 0;
+	virtual void OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime) = 0;
+	virtual void OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime) = 0;
 	virtual void OnKeyDown(WPARAM wParam) = 0;
 };
 
@@ -32,19 +33,26 @@ private:
 	void OnDestroyDevice();
 	void OnUpdateFrame();
 	void OnRenderFrame();
+	void Pause(BOOL rendering, BOOL timer);
 
-	HWND m_hWnd;
-	HINSTANCE m_hInstance;
-	BOOL m_active;
-	int m_windowWidth;
-	int m_windowHeight;
-	int m_fullscreenWidth;
-	int m_fullscreenHeight;
-	WINDOWPLACEMENT m_wp;
-	DWORD m_fillMode;
+	HWND                m_hWnd;
+	HINSTANCE           m_hInstance;
+	BOOL                m_active;
+	int                 m_windowWidth;
+	int                 m_windowHeight;
+	int                 m_fullscreenWidth;
+	int                 m_fullscreenHeight;
+	WINDOWPLACEMENT     m_wp;
+	DWORD               m_fillMode;
+	BOOL                m_renderingPaused;
+	BOOL                m_timerPaused;
+	int                 m_renderingPauseCount;
+	int                 m_timerPauseCount;
+	BOOL                m_closing;
 
 	CGraphics* m_pGraphics;
 	CBaseApp* m_pGameApp;
+	CTimer * m_pTimer;
 
 public:
 	CFramework(CBaseApp* pGameApp);

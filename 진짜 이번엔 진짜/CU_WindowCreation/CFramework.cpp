@@ -6,12 +6,18 @@ CFramework::CFramework(CBaseApp* pGameApp)
 {
 	m_pGameApp = pGameApp;
 	m_active = TRUE;
+	m_renderingPaused = FALSE;
+	m_timerPaused = FALSE;
+	m_closing = FALSE;
+
 	m_pGraphics = new CGraphics();
+	m_pTimer = new CTimer();
 	m_fillMode = D3DFILL_SOLID;
 }
 
 void CFramework::Release()
 {
+	m_closing = TRUE;
 	SAFE_RELEASE(m_pGraphics);
 	OnLostDevice();
 	OnDestroyDevice();
@@ -79,6 +85,9 @@ BOOL CFramework::Initialize(char* title, HINSTANCE hInstance, int width, int hei
 	OnCreateDevice();
 	OnResetDevice();
 
+	//Start the timer
+	Pause(FALSE, FALSE);
+
 	return TRUE;
 }
 
@@ -121,6 +130,8 @@ void CFramework::OnCreateDevice()
 //Called after the device is reset. Create D3DPOOL_DEFAULT resources here.
 void CFramework::OnResetDevice()
 {
+	//Start the timer
+	Pause(FALSE, FALSE);
 	if (m_pGameApp != NULL && m_pGraphics != NULL)
 	{
 		m_pGameApp->OnResetDevice(m_pGraphics->GetDevice());
@@ -130,6 +141,12 @@ void CFramework::OnResetDevice()
 //Called when the device is lost. Release D3DPOOL_DEFAULT resources here.
 void CFramework::OnLostDevice()
 {
+	if (!m_closing)
+	{
+		//Stop the timer only if we're not closing down
+		//or else stack corruption on return from Pause
+		Pause(TRUE, TRUE);
+	}
 	if (m_pGameApp != NULL)
 	{
 		m_pGameApp->OnLostDevice();
@@ -148,9 +165,14 @@ void CFramework::OnDestroyDevice()
 //Updates the current frame.
 void CFramework::OnUpdateFrame()
 {
-	if (m_pGameApp != NULL && m_pGraphics != NULL)
+	if (m_pTimer != NULL)
 	{
-		m_pGameApp->OnUpdateFrame(m_pGraphics->GetDevice());
+		m_pTimer->Update();
+	}
+
+	if (m_pGameApp != NULL && m_pGraphics != NULL && m_pTimer!= NULL)
+	{
+		m_pGameApp->OnUpdateFrame(m_pGraphics->GetDevice(), m_pTimer->GetElapsedTime());
 	}
 }
 
@@ -187,9 +209,9 @@ void CFramework::OnRenderFrame()
 		}
 	}
 
-	if (m_pGameApp != NULL)
+	if (m_pGameApp != NULL && !m_renderingPaused && m_pTimer != NULL)
 	{
-		m_pGameApp->OnRenderFrame(m_pGraphics->GetDevice());
+		m_pGameApp->OnRenderFrame(m_pGraphics->GetDevice(), m_pTimer->GetElapsedTime());
 	}
 }
 
@@ -200,6 +222,7 @@ void CFramework::ToggleFullscreen()
 	{
 		return;
 	}
+	Pause(TRUE, TRUE);
 
 	m_pGraphics->Windowed = !m_pGraphics->Windowed;
 
@@ -240,6 +263,7 @@ void CFramework::ToggleFullscreen()
 	{
 		ShowWindow(m_hWnd, SW_SHOW);
 	}
+	Pause(FALSE, FALSE);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -251,6 +275,32 @@ void CFramework::ToggleWireframe()
 	m_pGraphics->GetDevice()->SetRenderState(D3DRS_FILLMODE, m_fillMode);
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Summary: Pauses or unpauses rendering and the timer.
+Parameters:
+[in] rendering - TRUE to pause rendering, FALSE to unpause rendering.
+[in] timer - TRUE to pause the timer, FALSE to unpause the timer.
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void CFramework::Pause(BOOL rendering, BOOL timer)
+{
+	m_renderingPauseCount += rendering ? 1 : -1;
+	m_renderingPauseCount = (m_renderingPauseCount < 0) ? 0 : m_renderingPauseCount;
+
+	m_timerPauseCount += timer ? 1 : -1;
+	m_timerPauseCount = (m_timerPauseCount < 0) ? 0 : m_timerPauseCount;
+
+	m_renderingPaused = (m_renderingPauseCount > 0);
+	m_timerPaused = (m_timerPauseCount > 0);
+
+	if (m_timerPaused && m_pTimer != NULL)
+	{
+		m_pTimer->Stop();
+	}
+	else if (!m_timerPaused && m_pTimer != NULL)
+	{
+		m_pTimer->Start();
+	}
+}
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 Summary: Event handler. Routes messages to appropriate instance.
 Parameters:

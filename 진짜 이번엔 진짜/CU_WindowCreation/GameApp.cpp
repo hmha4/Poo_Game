@@ -11,22 +11,17 @@ struct CUSTOMVERTEX
 
 CUSTOMVERTEX g_vertices[] =
 {
-	{ -1.0f, -1.0f, 0.0f, D3DCOLOR_XRGB(255,   0,   0) }, // 0    
-	{ -1.0f,  1.0f, 0.0f, D3DCOLOR_XRGB(255, 255,   0) }, // 1    
-	{ 1.0f, -1.0f, 0.0f, D3DCOLOR_XRGB(0, 255,   0) }, // 2    
-	{ 1.0f,  1.0f, 0.0f, D3DCOLOR_XRGB(0,   0, 255) }  // 3    
+	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255,   0,   0) },
+	{ 1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255,   0) },
+	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(0, 255,   0) },
+	{ -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(0,   0, 255) },
+	{ 0.0f,  1.0f,  0.0f, D3DCOLOR_XRGB(255,   0,   0) }
 };
 
 
 
-USHORT g_indices[] = { 0, 1, 2, 1, 3, 2 };
+USHORT g_indices[] = { 0, 4, 1, 1, 4, 2, 2, 4, 3, 0, 3, 4, 0, 1, 3, 1, 2, 3 };
 
-
-
-//Transformation variables
-float g_Xdirection = 0.001f;
-float g_Ydirection = 0.001f;
-float g_scale = 0.0002f;
 
 CGameApp::CGameApp()
 {
@@ -70,10 +65,10 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void CGameApp::OnCreateDevice(LPDIRECT3DDEVICE9 pDevice)
 {
-	m_VB.CreateBuffer(pDevice, 4, D3DFVF_XYZ | D3DFVF_DIFFUSE, sizeof(CUSTOMVERTEX));
-	m_VB.SetData(4, g_vertices);
-	m_IB.CreateBuffer(pDevice, 6, D3DFMT_INDEX16);
-	m_IB.SetData(6, g_indices);
+	m_VB.CreateBuffer(pDevice, 5, D3DFVF_XYZ | D3DFVF_DIFFUSE, sizeof(CUSTOMVERTEX));
+	m_VB.SetData(5, g_vertices);
+	m_IB.CreateBuffer(pDevice, 18, D3DFMT_INDEX16);
+	m_IB.SetData(18, g_indices);
 	m_VB.SetIndexBuffer(&m_IB);
 }
 
@@ -151,28 +146,14 @@ Summary: Updates the current frame.
 Parameters:
 [in] pDevice – Pointer to a DIRECT3DDEVICE9 instance
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void CGameApp::OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice)
+void CGameApp::OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
-	//Translation
-	m_transform.TranslateRel(g_Xdirection, g_Ydirection, 0.0f);
-	if (m_transform.GetXPosition() > 3.0f || m_transform.GetXPosition() < -3.0f)
-	{
-		g_Xdirection *= -1.0f;
-	}
-	if (m_transform.GetYPosition() > 4.0f || m_transform.GetYPosition() < -4.0f)
-	{
-		g_Ydirection *= -1.0f;
-	}
+	
 
 	//Rotation
-	m_transform.RotateRel(0.0f, 0.0f, 0.001f);
+	m_transform.RotateRel(0.0f, 3.14f * elapsedTime, 0.0f);
 
-	//Scale
-	m_transform.ScaleRel(g_scale, g_scale, g_scale);
-	if (m_transform.GetXScale() > 2.0f || m_transform.GetXScale() < 0.5f)
-	{
-		g_scale *= -1.0f;
-	}
+	
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * * *
@@ -180,16 +161,14 @@ Summary: Renders the current frame.
 Parameters:
 [in] pDevice – Pointer to a DIRECT3DDEVICE9 instance
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice)
+void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
 	pDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 200), 1.0f, 0);
 	pDevice->BeginScene();
 
 	//Render scene here
 	pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
-	m_VB.Render(pDevice, 2, D3DPT_TRIANGLELIST);
-	/*pDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 1, g_triangle, sizeof(CUSTOMVERTEX));*/
-
+	m_VB.Render(pDevice, 6, D3DPT_TRIANGLELIST);
 
 	pDevice->EndScene();
 	pDevice->Present(0, 0, 0, 0);
@@ -213,6 +192,11 @@ void CGameApp::OnKeyDown(WPARAM wParam)
 			m_pFramework->ToggleFullscreen();
 		}
 		break;
+	case VK_F2:
+		if (m_pFramework != NULL)
+		{
+			m_pFramework->ToggleWireframe();
+		}
 	}
 }
 

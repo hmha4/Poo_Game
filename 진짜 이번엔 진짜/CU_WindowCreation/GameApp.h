@@ -25,8 +25,8 @@ public:
 	virtual void OnResetDevice(LPDIRECT3DDEVICE9 pDevice);
 	virtual void OnLostDevice();
 	virtual void OnDestroyDevice();
-	virtual void OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice);
-	virtual void OnRenderFrame(LPDIRECT3DDEVICE9 pDevice);
+	virtual void OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime);
+	virtual void OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime);
 	virtual void OnKeyDown(WPARAM wParam);
 };
 
