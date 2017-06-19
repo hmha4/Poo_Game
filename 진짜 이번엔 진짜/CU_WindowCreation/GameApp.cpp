@@ -9,86 +9,48 @@ struct CUSTOMVERTEX
 };
 
 CUSTOMVERTEX g_vertices[] =
-
 {
-
-
 	{ -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-
 	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
-
 	{ 1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-
 	{ -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-
 	{ 1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-
 	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f },
 
 	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-
 	{ 1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
-
 	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-
 	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-
 	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-
 	{ 1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f },
 
-
 	{ 1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-
 	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
-
 	{ -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-
 	{ 1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-
 	{ -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-
 	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f },
 
-
 	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-
 	{ -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
-
 	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-
 	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-
 	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-
 	{ -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f },
 
-
 	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(0,   0, 255), 0.0f, 0.0f },
-
 	{ 1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(0, 255,   0), 1.0f, 0.0f },
-
 	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255,   0,   0), 1.0f, 1.0f },
-
 	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(0,   0, 255), 0.0f, 0.0f },
-
 	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255,   0,   0), 1.0f, 1.0f },
-
 	{ -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255,   0), 0.0f, 1.0f },
 
-
 	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-
 	{ 1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
-
 	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-
 	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-
 	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-
 	{ -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f }
-
 
 };
 
@@ -96,6 +58,7 @@ CUSTOMVERTEX g_vertices[] =
 CGameApp::CGameApp()
 {
 	m_pFramework = NULL;
+	m_pTexture = NULL;
 }
 
 //Clean up resources
@@ -194,8 +157,7 @@ be released here, which generally includes all D3DPOOL_DEFAULT resources.
 * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * */
 void CGameApp::OnLostDevice()
 {
-	m_VB.Release();
-	SAFE_RELEASE(m_pTexture);
+	
 }
 
 /* * * * * * * * * *  * * * * * * * * * * * * * * * * * * * * * * * *
@@ -208,7 +170,8 @@ all D3DPOOL_MANAGED resources.
 * * * * * * * * * * ** * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnDestroyDevice()
 {
-
+	m_VB.Release();
+	SAFE_RELEASE(m_pTexture);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

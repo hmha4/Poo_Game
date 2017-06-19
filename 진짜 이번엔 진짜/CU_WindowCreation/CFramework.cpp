@@ -370,13 +370,13 @@ LRESULT CALLBACK CFramework::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
 			}
 		}
 		return 0;
-		case WM_KEYDOWN:
-			//Send keystrokes to application to handle
-			if (m_pGameApp != NULL)
-			{
-				m_pGameApp->OnKeyDown(wParam);
-			}
-			return 0;
+	case WM_KEYDOWN:
+		//Send keystrokes to application to handle
+		if (m_pGameApp != NULL)
+		{
+			m_pGameApp->OnKeyDown(wParam);
+		}
+		return 0;
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }
