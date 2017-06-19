@@ -13,6 +13,7 @@ public:
 	void Release();
 	BOOL SetData(UINT numIndices, void *pIndices, DWORD flags = D3DLOCK_DISCARD);
 	LPDIRECT3DINDEXBUFFER9 GetBuffer() { return m_pIB; }
+	UINT GetNumIndices() { return m_numIndices; }
 
 private:
 	LPDIRECT3DINDEXBUFFER9  m_pIB;

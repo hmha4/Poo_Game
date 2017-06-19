@@ -1,60 +1,6 @@
 ﻿#include "stdafx.h"
 #include "GameApp.h"
 
-struct CUSTOMVERTEX
-{
-	float x, y, z; //  Position in 3D space
-	DWORD color;   //  Color
-	float u, v;    //  Texture coordinates
-};
-
-CUSTOMVERTEX g_vertices[] =
-{
-	{ -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
-	{ 1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-	{ -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-	{ 1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f },
-
-	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-	{ 1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
-	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-	{ 1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f },
-
-	{ 1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
-	{ -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-	{ 1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-	{ -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f },
-
-	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-	{ -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
-	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-	{ -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f },
-
-	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(0,   0, 255), 0.0f, 0.0f },
-	{ 1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(0, 255,   0), 1.0f, 0.0f },
-	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255,   0,   0), 1.0f, 1.0f },
-	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(0,   0, 255), 0.0f, 0.0f },
-	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255,   0,   0), 1.0f, 1.0f },
-	{ -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255,   0), 0.0f, 1.0f },
-
-	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-	{ 1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
-	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
-	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
-	{ -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f }
-
-};
-
-
 CGameApp::CGameApp()
 {
 	m_pFramework = NULL;
@@ -83,6 +29,20 @@ Returns: TRUE on success, FALSE on failure
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ** */
 BOOL CGameApp::Initialize()
 {
+	//Create the light
+	ZeroMemory(&m_light, sizeof(D3DLIGHT9));
+	m_light.Type = D3DLIGHT_SPOT;
+	m_light.Diffuse.r = 1.0f;
+	m_light.Diffuse.g = 1.0f;
+	m_light.Diffuse.b = 1.0f;
+	m_light.Direction.x = 0.0f;
+	m_light.Direction.y = -0.5f;
+	m_light.Direction.z = 1.0f;
+	m_light.Range = 1000.0f;
+	m_light.Falloff = 1.0f;
+	m_light.Attenuation0 = 1.0f;
+	m_light.Theta = D3DXToRadian(10.0f);
+	m_light.Phi = D3DXToRadian(15.0f);
 	return TRUE;
 }
 
@@ -98,11 +58,47 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void CGameApp::OnCreateDevice(LPDIRECT3DDEVICE9 pDevice)
 {
-	//Create the buffer
-	m_VB.CreateBuffer(pDevice, 36, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, sizeof(CUSTOMVERTEX));
-	m_VB.SetData(36, g_vertices, 0);
+	cuCustomVertex::PositionNormalTextured vertices[] =
+	{
+		cuCustomVertex::PositionNormalTextured(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f),
+		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f),
+		cuCustomVertex::PositionNormalTextured(1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f),
+		cuCustomVertex::PositionNormalTextured(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f),
+		cuCustomVertex::PositionNormalTextured(1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f),
+		cuCustomVertex::PositionNormalTextured(-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f),
 
-	//Load the texture
+		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f, -1.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f),
+		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f),
+		cuCustomVertex::PositionNormalTextured(1.0f, -1.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 1.0f),
+		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f, -1.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f),
+		cuCustomVertex::PositionNormalTextured(1.0f, -1.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 1.0f),
+		cuCustomVertex::PositionNormalTextured(1.0f, -1.0f, -1.0f, 1.0f, 0.0f,  0.0f, 0.0f, 1.0f),
+
+		cuCustomVertex::PositionNormalTextured(-1.0f,  1.0f,  1.0f, 0.0f, 1.0f,  0.0f, 0.0f, 0.0f),
+		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f,  1.0f, 0.0f, 1.0f,  0.0f, 1.0f, 0.0f),
+		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f, -1.0f, 0.0f, 1.0f,  0.0f, 1.0f, 1.0f),
+		cuCustomVertex::PositionNormalTextured(-1.0f,  1.0f,  1.0f, 0.0f, 1.0f,  0.0f, 0.0f, 0.0f),
+		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f, -1.0f, 0.0f, 1.0f,  0.0f, 1.0f, 1.0f),
+		cuCustomVertex::PositionNormalTextured(-1.0f,  1.0f, -1.0f, 0.0f, 1.0f,  0.0f, 0.0f, 1.0f),
+	};
+	// Create low-poly crate
+	m_vb.CreateBuffer(pDevice, 18, D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1, sizeof(cuCustomVertex::PositionNormalTextured));
+	m_vb.SetData(18, vertices, 0);
+
+	// Create high-poly crate
+	cuCustomVertex::PositionNormalTextured* verticesDense = NULL;
+	CTriangleStripPlane::GeneratePositionNormalTextured(&verticesDense, 21, 21);
+	m_vbDense.CreateBuffer(pDevice, 21 * 21, D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1, sizeof(cuCustomVertex::PositionNormalTextured));
+	m_vbDense.SetData(21 * 21, verticesDense, 0);
+
+	// Create high-poly index buffer
+	USHORT* indices = NULL;
+	int numIndices = CTriangleStripPlane::GenerateIndices(&indices, 21, 21);
+	m_ib.CreateBuffer(pDevice, numIndices, D3DFMT_INDEX16);
+	m_ib.SetData(numIndices, indices, 0);
+	m_vbDense.SetIndexBuffer(&m_ib);
+
+	// Load the texture
 	char texture[MAX_PATH] = { 0 };
 	CUtility::GetMediaFile("panel.jpg", texture);
 	if (!texture)
@@ -142,8 +138,19 @@ void CGameApp::OnResetDevice(LPDIRECT3DDEVICE9 pDevice)
 	//Set up the render states
 	pDevice->SetRenderState(D3DRS_FILLMODE, m_pFramework->GetFillMode());
 	pDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
-	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-	
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	pDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(100, 100, 100));
+	pDevice->LightEnable(0, TRUE);
+
+	//Set a material
+	D3DMATERIAL9 material;
+	ZeroMemory(&material, sizeof(D3DMATERIAL9));
+	material.Diffuse.r = material.Ambient.r = 1.0f;
+	material.Diffuse.g = material.Ambient.g = 1.0f;
+	material.Diffuse.b = material.Ambient.b = 1.0f;
+	material.Diffuse.a = material.Ambient.a = 1.0f;
+	pDevice->SetMaterial(&material);
+
 	pDevice->SetTexture(0, m_pTexture);
 }
 
@@ -170,7 +177,9 @@ all D3DPOOL_MANAGED resources.
 * * * * * * * * * * ** * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnDestroyDevice()
 {
-	m_VB.Release();
+	m_vb.Release();
+	m_vbDense.Release();
+	m_ib.Release();
 	SAFE_RELEASE(m_pTexture);
 }
 
@@ -181,8 +190,21 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
-	//Create the new vertices
-	m_transform.RotateRel(0.0f, 3.14f * elapsedTime, 0.0f);
+	//Move the light back and forth
+	static float xVelocity = 3.0f;
+	float x = m_light.Position.x;
+	x += xVelocity * elapsedTime;
+	if (x < -4.0f || x > 4.0f)
+	{
+		x -= xVelocity * elapsedTime;
+		xVelocity = -xVelocity;
+	}
+	m_light.Position.x = x;
+	m_light.Position.y = 3.0f;
+	m_light.Position.z = -5.0f;
+
+		//Set the light to index 0 on the device
+	pDevice->SetLight(0, &m_light);
 	
 }
 
@@ -193,12 +215,40 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
-	pDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 200), 1.0f, 0);
+	pDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
 	pDevice->BeginScene();
 
 	//Render scene here
+	// Low-poly crate
+	m_transform.Reset();
+	m_transform.SetYRotation(D3DXToRadian(45.0f));
+	m_transform.SetXPosition(-1.7f);
 	pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
-	m_VB.Render(pDevice, 12, D3DPT_TRIANGLELIST);
+	m_vb.Render(pDevice, 6, D3DPT_TRIANGLELIST);
+
+	// Left side
+	m_transform.Reset();
+	m_transform.TranslateAbs(1.0f, 0.0f, -0.7071f);
+	m_transform.RotateAbs(D3DXToRadian(-90.0f), D3DXToRadian(45.0f), 0.0f);
+	m_transform.ScaleAbs(0.1f, 0.1f, 0.1f);
+	pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
+	m_vbDense.Render(pDevice, m_ib.GetNumIndices() - 2, D3DPT_TRIANGLESTRIP);
+
+	// Right side
+	m_transform.Reset();
+	m_transform.TranslateAbs(2.414f, 0.0f, -0.7071f);
+	m_transform.RotateAbs(D3DXToRadian(-90.0f), D3DXToRadian(-45.0f), 0.0f);
+	m_transform.ScaleAbs(0.1f, 0.1f, 0.1f);
+	pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
+	m_vbDense.Render(pDevice, m_ib.GetNumIndices() - 2, D3DPT_TRIANGLESTRIP);
+
+	// Top side
+	m_transform.Reset();
+	m_transform.TranslateAbs(1.7071f, 1.0f, 0.0f);
+	m_transform.SetYRotation(D3DXToRadian(45.0f));
+	m_transform.ScaleAbs(0.1f, 0.1f, 0.1f);
+	pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
+	m_vbDense.Render(pDevice, m_ib.GetNumIndices() - 2, D3DPT_TRIANGLESTRIP);
 
 	pDevice->EndScene();
 	pDevice->Present(0, 0, 0, 0);
@@ -252,7 +302,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 	}
 
 	//Initialize the Framework
-	if (!pFramework->Initialize("Textures", hInstance, 640, 480, TRUE))
+	if (!pFramework->Initialize("Lighting", hInstance, 640, 480, TRUE))
 	{
 		return 0;
 	}

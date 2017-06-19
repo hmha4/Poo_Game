@@ -119,6 +119,7 @@ void CVertexBuffer::Render(LPDIRECT3DDEVICE9 pDevice, UINT numPrimitives, D3DPRI
 	}
 	else
 	{
+		pDevice->SetIndices(NULL);
 		pDevice->DrawPrimitive(primitiveType, 0, numPrimitives);
 	}
 }

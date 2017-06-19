@@ -8,14 +8,19 @@
 #include "CIndexBuffer.h"
 #include "CWorldTransform.h"
 #include "CUtility.h"
+#include "CTriangleStripPlane.h"
+#include "cuCustomVertex.h"
 
 class CGameApp : public CBaseApp
 {
 private:
 	CFramework* m_pFramework;
-	CVertexBuffer m_VB;
+	CVertexBuffer m_vb;
+	CVertexBuffer m_vbDense;
+	CIndexBuffer m_ib;
 	CWorldTransform m_transform;
 	LPDIRECT3DTEXTURE9 m_pTexture;
+	D3DLIGHT9 m_light;
 
 public:
 	CGameApp();

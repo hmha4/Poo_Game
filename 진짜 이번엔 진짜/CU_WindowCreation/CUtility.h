@@ -1,4 +1,7 @@
 #pragma once
+///<summary>
+///Summary description for Utility.
+///</summary>
 class CUtility
 {
 private:
