@@ -5,10 +5,92 @@ struct CUSTOMVERTEX
 {
 	float x, y, z; //  Position in 3D space
 	DWORD color;   //  Color
+	float u, v;    //  Texture coordinates
 };
 
-D3DXVECTOR3* g_positions;
-D3DXVECTOR3* g_speeds;
+CUSTOMVERTEX g_vertices[] =
+
+{
+
+
+	{ -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
+
+	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
+
+	{ 1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
+
+	{ -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
+
+	{ 1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
+
+	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f },
+
+	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
+
+	{ 1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
+
+	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
+
+	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
+
+	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
+
+	{ 1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f },
+
+
+	{ 1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
+
+	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
+
+	{ -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
+
+	{ 1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
+
+	{ -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
+
+	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f },
+
+
+	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
+
+	{ -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
+
+	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
+
+	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
+
+	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
+
+	{ -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f },
+
+
+	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(0,   0, 255), 0.0f, 0.0f },
+
+	{ 1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(0, 255,   0), 1.0f, 0.0f },
+
+	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255,   0,   0), 1.0f, 1.0f },
+
+	{ -1.0f,  1.0f,  1.0f, D3DCOLOR_XRGB(0,   0, 255), 0.0f, 0.0f },
+
+	{ 1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255,   0,   0), 1.0f, 1.0f },
+
+	{ -1.0f,  1.0f, -1.0f, D3DCOLOR_XRGB(255, 255,   0), 0.0f, 1.0f },
+
+
+	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
+
+	{ 1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0.0f },
+
+	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
+
+	{ -1.0f, -1.0f, -1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 0.0f },
+
+	{ 1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 1.0f },
+
+	{ -1.0f, -1.0f,  1.0f, D3DCOLOR_XRGB(255, 255, 255), 0.0f, 1.0f }
+
+
+};
 
 
 CGameApp::CGameApp()
@@ -38,20 +120,6 @@ Returns: TRUE on success, FALSE on failure
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ** */
 BOOL CGameApp::Initialize()
 {
-	g_positions = new D3DXVECTOR3[1000];
-	g_speeds = new D3DXVECTOR3[1000];
-
-	//Seed random number generator
-	srand((UINT)time(NULL));
-	for (int i = 0; i < 1000; i++)
-	{
-		g_speeds[i].x = ((float)rand() / RAND_MAX * 1000.0f - 500.0f) / 50.0f;
-		g_speeds[i].y = ((float)rand() / RAND_MAX * 1000.0f - 500.0f) / 50.0f;
-		g_speeds[i].z = 0.0f;
-
-		g_positions[i].x = g_positions[i].y = g_positions[i].z = 0.0f;
-	}
-
 	return TRUE;
 }
 
@@ -67,7 +135,21 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void CGameApp::OnCreateDevice(LPDIRECT3DDEVICE9 pDevice)
 {
-	
+	//Create the buffer
+	m_VB.CreateBuffer(pDevice, 36, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, sizeof(CUSTOMVERTEX));
+	m_VB.SetData(36, g_vertices, 0);
+
+	//Load the texture
+	char texture[MAX_PATH] = { 0 };
+	CUtility::GetMediaFile("panel.jpg", texture);
+	if (!texture)
+	{
+		SHOWERROR("Unable to find texture file.", __FILE__, __LINE__);
+	}
+	if (FAILED(D3DXCreateTextureFromFile(pDevice, texture, &m_pTexture)))
+	{
+		SHOWERROR("Unable to create texture.", __FILE__, __LINE__);
+	}
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
@@ -82,24 +164,8 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnResetDevice(LPDIRECT3DDEVICE9 pDevice)
 {
-
-	/*D3DVERTEXELEMENT9 vertexDeclaration[] =
-	{
-		{0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
-		{0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
-		D3DDECL_END()
-	};
-
-	LPDIRECT3DVERTEXDECLARATION9 _vertexDeclaration = 0;
-	pDevice->CreateVertexDeclaration(vertexDeclaration, &_vertexDeclaration);
-	pDevice->SetVertexDeclaration(_vertexDeclaration);*/
-
-	// Create the buffer
-	m_VB.CreateBuffer(pDevice, 1000, D3DFVF_XYZ | D3DFVF_DIFFUSE, sizeof(CUSTOMVERTEX), TRUE);
-
 	// Set transforms
-	pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
-	D3DXVECTOR3 cameraPosition(0.0f, 0.0f, -10.0f);
+	D3DXVECTOR3 cameraPosition(0.0f, 2.0f, -5.0f);
 	D3DXVECTOR3 cameraTarget(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 cameraUp(0.0f, 1.0f, 0.0f);
 	D3DXMATRIX viewMatrix;
@@ -114,22 +180,8 @@ void CGameApp::OnResetDevice(LPDIRECT3DDEVICE9 pDevice)
 	pDevice->SetRenderState(D3DRS_FILLMODE, m_pFramework->GetFillMode());
 	pDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-	float pointSize = 3.0f;
-	pDevice->SetRenderState(D3DRS_POINTSIZE, *((DWORD*)&pointSize));
-
-	//Set the world and view matrices
-	//D3DXVECTOR3 cameraPosition(0.0f, 0.0f, -10.0f);
-	//D3DXVECTOR3 cameraTarget(0.0f, 0.0f, 0.0f);
-	//D3DXVECTOR3 cameraUp(0.0f, 1.0f, 0.0f);
-	//D3DXMATRIX viewMatrix;
-	//D3DXMatrixLookAtLH(&viewMatrix, &cameraPosition, &cameraTarget, &cameraUp);
-	//pDevice->SetTransform(D3DTS_VIEW, &viewMatrix);
-
-	////Set the projection matrix
-	//D3DXMATRIX projection;
-	//float aspect = (float)m_pFramework->GetWidth() / (float)m_pFramework->GetHeight();
-	//D3DXMatrixPerspectiveFovLH(&projection, D3DX_PI / 3, aspect, 1.0f, 1000.0f);
-	//pDevice->SetTransform(D3DTS_PROJECTION, &projection);
+	
+	pDevice->SetTexture(0, m_pTexture);
 }
 
 /* * * * * * * * * * * * * * * ** * * * * * * * * * * * * * * * * *
@@ -143,6 +195,7 @@ be released here, which generally includes all D3DPOOL_DEFAULT resources.
 void CGameApp::OnLostDevice()
 {
 	m_VB.Release();
+	SAFE_RELEASE(m_pTexture);
 }
 
 /* * * * * * * * * *  * * * * * * * * * * * * * * * * * * * * * * * *
@@ -166,40 +219,7 @@ Parameters:
 void CGameApp::OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
 	//Create the new vertices
-	CUSTOMVERTEX verts[1000];
-	for (int i = 0; i < 1000; i++)
-	{
-		g_positions[i] += g_speeds[i] * elapsedTime;
-		//Constrain points
-		if(g_positions[i].x < -7.0f || g_positions[i].x > 7.0f || g_positions[i].y < -5.0f || g_positions[i].y > 5.0f)
-		{
-			g_positions[i].x = 0.0f;
-			g_positions[i].y = 0.0f;
-		}
-		//Form colors based on distance from origin
-		//Lots of parabola shift and squeeze math going on.
-		float distanceFromOrigin = D3DXVec3Length(&g_positions[i]);
-		int red = -(int)(distanceFromOrigin * distanceFromOrigin * 15.0f) + 255;
-		red = (red < 0) ? 0 : red;
-		red = (red > 255) ? 255 : red;
-		int green = -(int)((distanceFromOrigin - 5) * (distanceFromOrigin - 5) * 15) + 255;
-		green = (green < 0) ? 0 : green;
-		green = (green > 255) ? 255 : green;
-		int blue = -(int)((distanceFromOrigin - 8) * (distanceFromOrigin - 8) * 15) + 255;
-		blue = (blue < 0) ? 0 : blue;
-		blue = (blue > 255) ? 255 : blue;
-		D3DCOLOR color = D3DCOLOR_XRGB(red, green, blue);
-		ZeroMemory(&verts[i], sizeof(CUSTOMVERTEX));
-		verts[i].x = g_positions[i].x;
-		verts[i].y = g_positions[i].y;
-		verts[i].z = g_positions[i].z;
-		verts[i].color = color;
-	}
-
-	//Fill up the buffer with the new vertices
-	m_VB.SetData(1000, verts);
-	
-
+	m_transform.RotateRel(0.0f, 3.14f * elapsedTime, 0.0f);
 	
 }
 
@@ -214,7 +234,8 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 	pDevice->BeginScene();
 
 	//Render scene here
-	m_VB.Render(pDevice, 1000, D3DPT_POINTLIST);
+	pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
+	m_VB.Render(pDevice, 12, D3DPT_TRIANGLELIST);
 
 	pDevice->EndScene();
 	pDevice->Present(0, 0, 0, 0);
@@ -268,7 +289,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 	}
 
 	//Initialize the Framework
-	if (!pFramework->Initialize("Creating a Framework", hInstance, 640, 480, TRUE))
+	if (!pFramework->Initialize("Textures", hInstance, 640, 480, TRUE))
 	{
 		return 0;
 	}

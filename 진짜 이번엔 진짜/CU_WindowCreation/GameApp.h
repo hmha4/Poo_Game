@@ -7,14 +7,16 @@
 #include "CVertexBuffer.h"
 #include "CIndexBuffer.h"
 #include "CWorldTransform.h"
+#include "CUtility.h"
 
 class CGameApp : public CBaseApp
 {
 private:
 	CFramework* m_pFramework;
 	CVertexBuffer m_VB;
-	CIndexBuffer m_IB;
 	CWorldTransform m_transform;
+	LPDIRECT3DTEXTURE9 m_pTexture;
+
 public:
 	CGameApp();
 	~CGameApp() { Release(); }

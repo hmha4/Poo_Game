@@ -92,6 +92,7 @@
     <ClCompile Include="CGraphics.cpp" />
     <ClCompile Include="CFramework.cpp" />
     <ClCompile Include="CTimer.cpp" />
+    <ClCompile Include="CUtility.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="CIndexBuffer.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -105,6 +106,7 @@
     <ClInclude Include="CGraphics.h" />
     <ClInclude Include="CFramework.h" />
     <ClInclude Include="CTimer.h" />
+    <ClInclude Include="CUtility.h" />
     <ClInclude Include="GameApp.h" />
     <ClInclude Include="CIndexBuffer.h" />
     <ClInclude Include="resource.h" />
