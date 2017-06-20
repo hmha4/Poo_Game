@@ -13,6 +13,7 @@
 #include "CFont.h"
 #include "CMesh.h"
 #include "CTerrain.h"
+#include "CCamera.h"
 
 class CGameApp : public CBaseApp
 {
@@ -25,6 +26,7 @@ private:
 	CMesh           m_mesh;
 	CMeshInstance*  m_pTemple;
 	CTerrain        m_terrain;
+	CCamera         m_camera;
 
 	char m_fps[10];
 	BOOL m_showInstructions;

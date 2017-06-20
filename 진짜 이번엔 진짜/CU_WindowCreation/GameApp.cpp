@@ -32,6 +32,11 @@ Returns: TRUE on success, FALSE on failure
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ** */
 BOOL CGameApp::Initialize()
 {
+	m_camera.SetMaxVelocity(100.0f);
+	m_camera.SetPosition(new D3DXVECTOR3(0.0f, 20.0f, 0.0f));
+	m_camera.SetLookAt(new D3DXVECTOR3(-20.0f, 15.0f, 10.0f));
+	m_camera.Update();
+
 	return TRUE;
 }
 
@@ -73,16 +78,8 @@ void CGameApp::OnResetDevice(LPDIRECT3DDEVICE9 pDevice)
 	m_font.OnResetDevice();
 
 	// Set transforms
-	D3DXVECTOR3 cameraPosition(0.0f, 50.0f, 80.0f);
-	D3DXVECTOR3 cameraTarget(0.0f, 0.0f, 0.0f);
-	D3DXVECTOR3 cameraUp(0.0f, 1.0f, 0.0f);
-	D3DXMATRIX viewMatrix;
-	D3DXMatrixLookAtLH(&viewMatrix, &cameraPosition, &cameraTarget, &cameraUp);
-	pDevice->SetTransform(D3DTS_VIEW, &viewMatrix);
-	D3DXMATRIX projection;
-	float aspect = (float)m_pFramework->GetWidth() / (float)m_pFramework->GetHeight();
-	D3DXMatrixPerspectiveFovLH(&projection, D3DX_PI / 3.0f, aspect, 0.1f, 1000.0f);
-	pDevice->SetTransform(D3DTS_PROJECTION, &projection);
+	m_camera.SetAspectRatio((float)m_pFramework->GetWidth() / (float)m_pFramework->GetHeight());
+	pDevice->SetTransform(D3DTS_PROJECTION, m_camera.GetProjectionMatrix());
 
 	//Set up the render states
 	pDevice->SetRenderState(D3DRS_FILLMODE, m_pFramework->GetFillMode());
@@ -128,7 +125,7 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
-	
+	m_camera.Update();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * * *
@@ -138,6 +135,7 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
+	pDevice->SetTransform(D3DTS_VIEW, m_camera.GetViewMatrix());
 	sprintf(m_fps, "%.2f fps", m_pFramework->GetFPS());
 
 	pDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(100, 200, 255), 1.0f, 0);
@@ -207,33 +205,27 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::ProcessInput(long xDelta, long yDelta, long zDelta, BOOL* pMouseButtons, BOOL* pPressedKeys, float elapsedTime)
 {
+	float cameraSpeed = 20.0f;
 	if (pMouseButtons[0])
 	{
-		m_terrain.RotateRel(D3DXToRadian(yDelta * .01f), D3DXToRadian(xDelta * .01f), 0.0f);
+		m_camera.Yaw(xDelta * elapsedTime * 1.8f);
+		m_camera.Pitch(yDelta * elapsedTime * 1.8);
 	}
 	if (pPressedKeys[DIK_W])
 	{
-		m_terrain.TranslateRel(0.0f, 20.0f * elapsedTime, 0.0f);
+		m_camera.MoveForward(cameraSpeed * elapsedTime);
 	}
 	if (pPressedKeys[DIK_A])
 	{
-		m_terrain.TranslateRel(-20.0f * elapsedTime, 0.0f, 0.0f);
+		m_camera.Strafe(-cameraSpeed * elapsedTime);
 	}
 	if (pPressedKeys[DIK_S])
 	{
-		m_terrain.TranslateRel(0.0f, -20.0f * elapsedTime, 0.0f);
+		m_camera.MoveForward(-cameraSpeed * elapsedTime);
 	}
 	if (pPressedKeys[DIK_D])
 	{
-		m_terrain.TranslateRel(20.0f * elapsedTime, 0.0f, 0.0f);
-	}
-	if (pPressedKeys[DIK_Q])
-	{
-		m_terrain.ScaleRel(0.0f, -0.5f * elapsedTime, 0.0f);
-	}
-	if (pPressedKeys[DIK_E])
-	{
-		m_terrain.ScaleRel(0.0f, 0.5f * elapsedTime, 0.0f);
+		m_camera.Strafe(cameraSpeed * elapsedTime);
 	}
 	if (pPressedKeys[DIK_ESCAPE])
 	{
