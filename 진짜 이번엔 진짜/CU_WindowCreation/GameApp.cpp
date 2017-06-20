@@ -32,15 +32,6 @@ Returns: TRUE on success, FALSE on failure
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ** */
 BOOL CGameApp::Initialize()
 {
-	//Create the light
-	ZeroMemory(&m_light, sizeof(D3DLIGHT9));
-	m_light.Type = D3DLIGHT_DIRECTIONAL;;
-	m_light.Diffuse.r = 1.0f;
-	m_light.Diffuse.g = 1.0f;
-	m_light.Diffuse.b = 1.0f;
-	m_light.Direction.x = -1.0f;
-	m_light.Direction.y = -1.0f;
-	m_light.Direction.z = 1.0f;
 	return TRUE;
 }
 
@@ -56,20 +47,14 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void CGameApp::OnCreateDevice(LPDIRECT3DDEVICE9 pDevice)
 {
-	//Load meshes
-	m_mesh.Load(pDevice, "temple.x");
-	if (m_pTemple)
-	{
-		m_pTemple[0].Release();
-	}
-	m_pTemple = new CMeshInstance[2];
-	m_pTemple[0].SetMesh(&m_mesh);
-	
-	//Create sprite for batching text calls
 	D3DXCreateSprite(pDevice, &m_pTextSprite);
-
 	//Create 2D text
 	m_font.Initialize(pDevice, "Arial", 12);
+
+	m_terrain.Initialize(pDevice, "heightMap.raw", "terrain.jpg");
+	m_terrain.ScaleAbs(0.5f, 0.15f, 0.5f);
+	m_terrain.RotateAbs(0, 1.5f, 0);
+	m_terrain.TranslateAbs(0, -7, 0);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
@@ -88,8 +73,8 @@ void CGameApp::OnResetDevice(LPDIRECT3DDEVICE9 pDevice)
 	m_font.OnResetDevice();
 
 	// Set transforms
-	D3DXVECTOR3 cameraPosition(0.0f, 8.0f, -15.0f);
-	D3DXVECTOR3 cameraTarget(0.0f, 0.0f, 5.0f);
+	D3DXVECTOR3 cameraPosition(0.0f, 50.0f, 80.0f);
+	D3DXVECTOR3 cameraTarget(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 cameraUp(0.0f, 1.0f, 0.0f);
 	D3DXMATRIX viewMatrix;
 	D3DXMatrixLookAtLH(&viewMatrix, &cameraPosition, &cameraTarget, &cameraUp);
@@ -102,10 +87,7 @@ void CGameApp::OnResetDevice(LPDIRECT3DDEVICE9 pDevice)
 	//Set up the render states
 	pDevice->SetRenderState(D3DRS_FILLMODE, m_pFramework->GetFillMode());
 	pDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
-	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-	pDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(80, 80, 80));
-	pDevice->LightEnable(0, TRUE);
-	pDevice->SetLight(0, &m_light);
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	
 }
@@ -136,12 +118,7 @@ void CGameApp::OnDestroyDevice()
 {
 	SAFE_RELEASE(m_pTextSprite);
 	m_font.Release();
-
-	if (m_pTemple)
-	{
-		m_pTemple[0].Release();
-	}
-	m_mesh.Release();
+	m_terrain.Release();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -163,12 +140,12 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
 	sprintf(m_fps, "%.2f fps", m_pFramework->GetFPS());
 
-	pDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
+	pDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(100, 200, 255), 1.0f, 0);
 	pDevice->BeginScene();
 
 	//Render scene here
 	
-	m_pTemple[0].Render(pDevice);
+	m_terrain.Render(pDevice);
 
 	//Display framerate and instructions
 	m_pTextSprite->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_SORT_TEXTURE);
@@ -232,33 +209,31 @@ void CGameApp::ProcessInput(long xDelta, long yDelta, long zDelta, BOOL* pMouseB
 {
 	if (pMouseButtons[0])
 	{
-		m_pTemple[0].RotateRel(D3DXToRadian(yDelta * -0.5f), D3DXToRadian(xDelta * -0.5f), 0.0f);
+		m_terrain.RotateRel(D3DXToRadian(yDelta * .01f), D3DXToRadian(xDelta * .01f), 0.0f);
 	}
 	if (pPressedKeys[DIK_W])
 	{
-		m_pTemple[0].TranslateRel(0.0f, 10.0f * elapsedTime, 0.0f);
+		m_terrain.TranslateRel(0.0f, 20.0f * elapsedTime, 0.0f);
 	}
 	if (pPressedKeys[DIK_A])
 	{
-		m_pTemple[0].TranslateRel(-10.0f * elapsedTime, 0.0f, 0.0f);
+		m_terrain.TranslateRel(-20.0f * elapsedTime, 0.0f, 0.0f);
 	}
 	if (pPressedKeys[DIK_S])
 	{
-		m_pTemple[0].TranslateRel(0.0f, -10.0f * elapsedTime, 0.0f);
+		m_terrain.TranslateRel(0.0f, -20.0f * elapsedTime, 0.0f);
 	}
 	if (pPressedKeys[DIK_D])
 	{
-		m_pTemple[0].TranslateRel(10.0f * elapsedTime, 0.0f, 0.0f);
+		m_terrain.TranslateRel(20.0f * elapsedTime, 0.0f, 0.0f);
 	}
 	if (pPressedKeys[DIK_Q])
 	{
-		float factor = -1.0f * elapsedTime;
-		m_pTemple[0].ScaleRel(factor, factor, factor);
+		m_terrain.ScaleRel(0.0f, -0.5f * elapsedTime, 0.0f);
 	}
 	if (pPressedKeys[DIK_E])
 	{
-		float factor = 1.0f * elapsedTime;
-		m_pTemple[0].ScaleRel(factor, factor, factor);
+		m_terrain.ScaleRel(0.0f, 0.5f * elapsedTime, 0.0f);
 	}
 	if (pPressedKeys[DIK_ESCAPE])
 	{

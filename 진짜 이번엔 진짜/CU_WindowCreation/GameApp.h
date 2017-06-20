@@ -12,6 +12,7 @@
 #include "cuCustomVertex.h"
 #include "CFont.h"
 #include "CMesh.h"
+#include "CTerrain.h"
 
 class CGameApp : public CBaseApp
 {
@@ -23,6 +24,7 @@ private:
 	D3DLIGHT9       m_light;
 	CMesh           m_mesh;
 	CMeshInstance*  m_pTemple;
+	CTerrain        m_terrain;
 
 	char m_fps[10];
 	BOOL m_showInstructions;

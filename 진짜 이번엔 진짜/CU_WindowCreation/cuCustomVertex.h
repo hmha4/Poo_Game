@@ -26,6 +26,19 @@ namespace cuCustomVertex
 		DWORD Color;
 	} PositionColor;
 
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	Summary: Position and color
+	* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	typedef struct PositionTextured
+	{
+	public:
+		PositionTextured() : X(0), Y(0), Z(0), Tu(0), Tv(0) {}
+		PositionTextured(float x, float y, float z, float tu, float tv)
+			: X(x), Y(y), Z(z), Tu(tu), Tv(tv) {}
+		float X, Y, Z;
+		float Tu, Tv;
+	} PositionTextured;
+
 	//Position, color, texture coordinates
 	typedef struct PositionColorTextured
 	{

@@ -31,4 +31,5 @@
 #include <dinput.h>
 
 #include <ctime>
+#include <fstream>
 #include "resource.h"

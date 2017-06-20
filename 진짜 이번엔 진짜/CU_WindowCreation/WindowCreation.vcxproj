@@ -93,6 +93,7 @@
     <ClCompile Include="CFramework.cpp" />
     <ClCompile Include="CInputDevice.cpp" />
     <ClCompile Include="CMesh.cpp" />
+    <ClCompile Include="CTerrain.cpp" />
     <ClCompile Include="CTimer.cpp" />
     <ClCompile Include="CTriangleStripPlane.cpp" />
     <ClCompile Include="CUtility.cpp" />
@@ -111,6 +112,7 @@
     <ClInclude Include="CFramework.h" />
     <ClInclude Include="CInputDevice.h" />
     <ClInclude Include="CMesh.h" />
+    <ClInclude Include="CTerrain.h" />
     <ClInclude Include="CTimer.h" />
     <ClInclude Include="CTriangleStripPlane.h" />
     <ClInclude Include="cuCustomVertex.h" />
