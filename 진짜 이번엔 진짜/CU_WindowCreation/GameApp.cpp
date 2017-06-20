@@ -1,10 +1,15 @@
 ﻿#include "stdafx.h"
 #include "GameApp.h"
 
+char * g_sometext = "Look how lovely all this text is. I think I could just writhe text all day. Did you know that if you cross a bull dog and a shih tzu, you get a bull shiht? Ok, that wasn't very good. What can I say? I've been writing tutorials all day.\nLook!\nA\nline\nbreak\nis\nused\nhere!"; 
+char* g_instructions = "Esc: Quit\r\nF5: Toggle fullscreen\r\nF6: Toggle wireframe";
+
 CGameApp::CGameApp()
 {
 	m_pFramework = NULL;
 	m_pTexture = NULL;
+	m_pTextMesh = NULL;
+	m_showInstructions = FALSE;
 }
 
 //Clean up resources
@@ -31,18 +36,13 @@ BOOL CGameApp::Initialize()
 {
 	//Create the light
 	ZeroMemory(&m_light, sizeof(D3DLIGHT9));
-	m_light.Type = D3DLIGHT_SPOT;
+	m_light.Type = D3DLIGHT_DIRECTIONAL;;
 	m_light.Diffuse.r = 1.0f;
 	m_light.Diffuse.g = 1.0f;
 	m_light.Diffuse.b = 1.0f;
-	m_light.Direction.x = 0.0f;
-	m_light.Direction.y = -0.5f;
+	m_light.Direction.x = -1.0f;
+	m_light.Direction.y = -1.0f;
 	m_light.Direction.z = 1.0f;
-	m_light.Range = 1000.0f;
-	m_light.Falloff = 1.0f;
-	m_light.Attenuation0 = 1.0f;
-	m_light.Theta = D3DXToRadian(10.0f);
-	m_light.Phi = D3DXToRadian(15.0f);
 	return TRUE;
 }
 
@@ -58,57 +58,34 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void CGameApp::OnCreateDevice(LPDIRECT3DDEVICE9 pDevice)
 {
-	cuCustomVertex::PositionNormalTextured vertices[] =
+	//Create sprite for batching text calls
+	D3DXCreateSprite(pDevice, &m_pTextSprite);
+
+	//Create 2D text
+	m_font.Initialize(pDevice, "Arial", 12);
+
+	//Create 3D text
+	SAFE_RELEASE(m_pTextMesh);
+	HFONT hFont = CreateFont(0, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial");
+
+	HDC hdc = CreateCompatibleDC(NULL);
+
+	//Save the old font
+	HFONT hFontOld = (HFONT)SelectObject(hdc, hFont);
+
+	//Create the text mesh
+	if (FAILED(D3DXCreateText(pDevice, hdc, "C_Unit", 0.01f, 0.4f, &m_pTextMesh, NULL, NULL)))
 	{
-		cuCustomVertex::PositionNormalTextured(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f),
-		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f),
-		cuCustomVertex::PositionNormalTextured(1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f),
-		cuCustomVertex::PositionNormalTextured(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f),
-		cuCustomVertex::PositionNormalTextured(1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f),
-		cuCustomVertex::PositionNormalTextured(-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f),
-
-		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f, -1.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f),
-		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f),
-		cuCustomVertex::PositionNormalTextured(1.0f, -1.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 1.0f),
-		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f, -1.0f, 1.0f, 0.0f,  0.0f, 0.0f, 0.0f),
-		cuCustomVertex::PositionNormalTextured(1.0f, -1.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 1.0f),
-		cuCustomVertex::PositionNormalTextured(1.0f, -1.0f, -1.0f, 1.0f, 0.0f,  0.0f, 0.0f, 1.0f),
-
-		cuCustomVertex::PositionNormalTextured(-1.0f,  1.0f,  1.0f, 0.0f, 1.0f,  0.0f, 0.0f, 0.0f),
-		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f,  1.0f, 0.0f, 1.0f,  0.0f, 1.0f, 0.0f),
-		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f, -1.0f, 0.0f, 1.0f,  0.0f, 1.0f, 1.0f),
-		cuCustomVertex::PositionNormalTextured(-1.0f,  1.0f,  1.0f, 0.0f, 1.0f,  0.0f, 0.0f, 0.0f),
-		cuCustomVertex::PositionNormalTextured(1.0f,  1.0f, -1.0f, 0.0f, 1.0f,  0.0f, 1.0f, 1.0f),
-		cuCustomVertex::PositionNormalTextured(-1.0f,  1.0f, -1.0f, 0.0f, 1.0f,  0.0f, 0.0f, 1.0f),
-	};
-	// Create low-poly crate
-	m_vb.CreateBuffer(pDevice, 18, D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1, sizeof(cuCustomVertex::PositionNormalTextured));
-	m_vb.SetData(18, vertices, 0);
-
-	// Create high-poly crate
-	cuCustomVertex::PositionNormalTextured* verticesDense = NULL;
-	CTriangleStripPlane::GeneratePositionNormalTextured(&verticesDense, 21, 21);
-	m_vbDense.CreateBuffer(pDevice, 21 * 21, D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1, sizeof(cuCustomVertex::PositionNormalTextured));
-	m_vbDense.SetData(21 * 21, verticesDense, 0);
-
-	// Create high-poly index buffer
-	USHORT* indices = NULL;
-	int numIndices = CTriangleStripPlane::GenerateIndices(&indices, 21, 21);
-	m_ib.CreateBuffer(pDevice, numIndices, D3DFMT_INDEX16);
-	m_ib.SetData(numIndices, indices, 0);
-	m_vbDense.SetIndexBuffer(&m_ib);
-
-	// Load the texture
-	char texture[MAX_PATH] = { 0 };
-	CUtility::GetMediaFile("panel.jpg", texture);
-	if (!texture)
-	{
-		SHOWERROR("Unable to find texture file.", __FILE__, __LINE__);
+		SHOWERROR("D3DXCreateText() - Failed.", __FILE__, __LINE__);
 	}
-	if (FAILED(D3DXCreateTextureFromFile(pDevice, texture, &m_pTexture)))
-	{
-		SHOWERROR("Unable to create texture.", __FILE__, __LINE__);
-	}
+
+	//Restore the old font and clean up
+	SelectObject(hdc, hFontOld);
+	DeleteObject(hFont);
+	DeleteDC(hdc);
+
+	
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
@@ -123,6 +100,9 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnResetDevice(LPDIRECT3DDEVICE9 pDevice)
 {
+	m_pTextSprite->OnResetDevice();
+	m_font.OnResetDevice();
+
 	// Set transforms
 	D3DXVECTOR3 cameraPosition(0.0f, 2.0f, -5.0f);
 	D3DXVECTOR3 cameraTarget(0.0f, 0.0f, 0.0f);
@@ -139,14 +119,15 @@ void CGameApp::OnResetDevice(LPDIRECT3DDEVICE9 pDevice)
 	pDevice->SetRenderState(D3DRS_FILLMODE, m_pFramework->GetFillMode());
 	pDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-	pDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(100, 100, 100));
+	pDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(80, 80, 80));
 	pDevice->LightEnable(0, TRUE);
+	pDevice->SetLight(0, &m_light);
 
 	//Set a material
 	D3DMATERIAL9 material;
 	ZeroMemory(&material, sizeof(D3DMATERIAL9));
-	material.Diffuse.r = material.Ambient.r = 1.0f;
-	material.Diffuse.g = material.Ambient.g = 1.0f;
+	material.Diffuse.r = material.Ambient.r = 0.4f;
+	material.Diffuse.g = material.Ambient.g = 0.7f;
 	material.Diffuse.b = material.Ambient.b = 1.0f;
 	material.Diffuse.a = material.Ambient.a = 1.0f;
 	pDevice->SetMaterial(&material);
@@ -164,7 +145,8 @@ be released here, which generally includes all D3DPOOL_DEFAULT resources.
 * * * * * * * * * * * * * * * * * *  * * * * * * * * * * * * * * * */
 void CGameApp::OnLostDevice()
 {
-	
+	m_pTextSprite->OnLostDevice();
+	m_font.OnLostDevice();
 }
 
 /* * * * * * * * * *  * * * * * * * * * * * * * * * * * * * * * * * *
@@ -177,10 +159,9 @@ all D3DPOOL_MANAGED resources.
 * * * * * * * * * * ** * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnDestroyDevice()
 {
-	m_vb.Release();
-	m_vbDense.Release();
-	m_ib.Release();
+	SAFE_RELEASE(m_pTextSprite);
 	SAFE_RELEASE(m_pTexture);
+	m_font.Release();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -206,6 +187,9 @@ void CGameApp::OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 		//Set the light to index 0 on the device
 	pDevice->SetLight(0, &m_light);
 	
+	m_transform.SetXPosition(-1.0f);
+	m_transform.RotateRel(D3DXToRadian(-90.0f) * elapsedTime, 0.0f, 0.0f);
+	pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * * *
@@ -215,40 +199,42 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
+	sprintf(m_fps, "%.2f fps", m_pFramework->GetFPS());
+
 	pDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
 	pDevice->BeginScene();
 
 	//Render scene here
-	// Low-poly crate
-	m_transform.Reset();
-	m_transform.SetYRotation(D3DXToRadian(45.0f));
-	m_transform.SetXPosition(-1.7f);
-	pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
-	m_vb.Render(pDevice, 6, D3DPT_TRIANGLELIST);
+	m_font.Print("Printing text without a sprite like\r\nthis slows things down a bit.",
+		m_pFramework->GetWidth() - 300, m_pFramework->GetHeight() - 100, D3DCOLOR_XRGB(0, 200, 0));
 
-	// Left side
-	m_transform.Reset();
-	m_transform.TranslateAbs(1.0f, 0.0f, -0.7071f);
-	m_transform.RotateAbs(D3DXToRadian(-90.0f), D3DXToRadian(45.0f), 0.0f);
-	m_transform.ScaleAbs(0.1f, 0.1f, 0.1f);
-	pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
-	m_vbDense.Render(pDevice, m_ib.GetNumIndices() - 2, D3DPT_TRIANGLESTRIP);
+	m_pTextSprite->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_SORT_TEXTURE);
+	m_font.Print(g_sometext, 50, 100, D3DCOLOR_XRGB(255, 0, 0), m_pTextSprite, 200, 0, FA_CENTER);
+	m_font.Print("We can even align a bunch of text along the right side. Isn't that neat?",
+		m_pFramework->GetWidth() - 110, m_pFramework->GetHeight() - (m_pFramework->GetHeight() / 2) - 30,
+		D3DCOLOR_XRGB(200, 200, 255), m_pTextSprite, 100, 0, FA_RIGHT);
 
-	// Right side
-	m_transform.Reset();
-	m_transform.TranslateAbs(2.414f, 0.0f, -0.7071f);
-	m_transform.RotateAbs(D3DXToRadian(-90.0f), D3DXToRadian(-45.0f), 0.0f);
-	m_transform.ScaleAbs(0.1f, 0.1f, 0.1f);
-	pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
-	m_vbDense.Render(pDevice, m_ib.GetNumIndices() - 2, D3DPT_TRIANGLESTRIP);
+	// Display framerate and instructions
+	m_font.Print(m_fps, 5, 5, D3DCOLOR_XRGB(255, 0, 0), m_pTextSprite);
+	if (m_showInstructions)
+	{
+		m_font.Print(g_instructions, 5, 20, D3DCOLOR_XRGB(255, 255, 255), m_pTextSprite);
+	}
+	else
+	{
+		m_font.Print("Hit F1 to view the instructions.", 5, 20, D3DCOLOR_XRGB(255, 255, 255), m_pTextSprite);
+	}
 
-	// Top side
-	m_transform.Reset();
-	m_transform.TranslateAbs(1.7071f, 1.0f, 0.0f);
-	m_transform.SetYRotation(D3DXToRadian(45.0f));
-	m_transform.ScaleAbs(0.1f, 0.1f, 0.1f);
-	pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
-	m_vbDense.Render(pDevice, m_ib.GetNumIndices() - 2, D3DPT_TRIANGLESTRIP);
+	m_pTextSprite->End();
+
+	// Render 3D text
+	if (m_pTextMesh)
+	{
+		m_pTextMesh->DrawSubset(0);
+	}
+
+	
+	
 
 	pDevice->EndScene();
 	pDevice->Present(0, 0, 0, 0);
@@ -267,12 +253,15 @@ void CGameApp::OnKeyDown(WPARAM wParam)
 		PostQuitMessage(0);
 		break;
 	case VK_F1:
+		m_showInstructions = !m_showInstructions;
+		break;
+	case VK_F5:
 		if (m_pFramework != NULL)
 		{
 			m_pFramework->ToggleFullscreen();
 		}
 		break;
-	case VK_F2:
+	case VK_F6:
 		if (m_pFramework != NULL)
 		{
 			m_pFramework->ToggleWireframe();

@@ -66,6 +66,7 @@ public:
 	DWORD GetFillMode();
 	int GetWidth();
 	int GetHeight();
+	float GetFPS();
 };
 
 #endif // !CFRAMEWORK_H

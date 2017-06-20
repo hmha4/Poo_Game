@@ -418,3 +418,15 @@ int CFramework::GetHeight()
 	return m_fullscreenHeight;
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Summary: Gets the framerate
+Returns: Framerate
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+float CFramework::GetFPS()
+{
+	if (m_pTimer != NULL)
+	{
+		return m_pTimer->GetFPS();
+	}
+	return 0.0f;
+}

@@ -10,6 +10,7 @@
 #include "CUtility.h"
 #include "CTriangleStripPlane.h"
 #include "cuCustomVertex.h"
+#include "CFont.h"
 
 class CGameApp : public CBaseApp
 {
@@ -19,8 +20,14 @@ private:
 	CVertexBuffer m_vbDense;
 	CIndexBuffer m_ib;
 	CWorldTransform m_transform;
+	CFont m_font;
 	LPDIRECT3DTEXTURE9 m_pTexture;
+	LPD3DXMESH m_pTextMesh;
+	LPD3DXSPRITE m_pTextSprite;
 	D3DLIGHT9 m_light;
+
+	char m_fps[10];
+	BOOL m_showInstructions;
 
 public:
 	CGameApp();

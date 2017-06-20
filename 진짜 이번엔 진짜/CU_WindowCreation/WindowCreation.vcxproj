@@ -94,6 +94,7 @@
     <ClCompile Include="CTimer.cpp" />
     <ClCompile Include="CTriangleStripPlane.cpp" />
     <ClCompile Include="CUtility.cpp" />
+    <ClCompile Include="CFont.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="CIndexBuffer.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -110,6 +111,7 @@
     <ClInclude Include="CTriangleStripPlane.h" />
     <ClInclude Include="cuCustomVertex.h" />
     <ClInclude Include="CUtility.h" />
+    <ClInclude Include="CFont.h" />
     <ClInclude Include="GameApp.h" />
     <ClInclude Include="CIndexBuffer.h" />
     <ClInclude Include="resource.h" />
