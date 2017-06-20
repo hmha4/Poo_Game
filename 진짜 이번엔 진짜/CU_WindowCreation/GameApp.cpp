@@ -8,6 +8,7 @@ CGameApp::CGameApp()
 	m_pFramework = NULL;
 	m_pTemple = NULL;
 	m_showInstructions = FALSE;
+	baseORdetail = FALSE;
 }
 
 //Clean up resources
@@ -56,10 +57,17 @@ void CGameApp::OnCreateDevice(LPDIRECT3DDEVICE9 pDevice)
 	//Create 2D text
 	m_font.Initialize(pDevice, "Arial", 12);
 
-	m_terrain.Initialize(pDevice, "heightMap.raw", "terrain.jpg");
-	m_terrain.ScaleAbs(0.5f, 0.15f, 0.5f);
-	m_terrain.RotateAbs(0, 1.5f, 0);
-	m_terrain.TranslateAbs(0, -7, 0);
+	
+	m_terrain1.Initialize(pDevice, "heightMap.raw", "terrain_base_texture.jpg");
+	m_terrain1.ScaleAbs(0.5f, 0.15f, 0.5f);
+	m_terrain1.RotateAbs(0, 1.5f, 0);
+	m_terrain1.TranslateAbs(0, -7, 0);
+	
+	m_terrain2.Initialize(pDevice, "heightMap.raw", "terrain_base_texture.jpg", "terrain_detail_texture.jpg");
+	m_terrain2.ScaleAbs(0.5f, 0.15f, 0.5f);
+	m_terrain2.RotateAbs(0, 1.5f, 0);
+	m_terrain2.TranslateAbs(0, -7, 0);
+	
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
@@ -115,7 +123,8 @@ void CGameApp::OnDestroyDevice()
 {
 	SAFE_RELEASE(m_pTextSprite);
 	m_font.Release();
-	m_terrain.Release();
+	m_terrain1.Release();
+	m_terrain2.Release();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -142,8 +151,11 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 	pDevice->BeginScene();
 
 	//Render scene here
-	
-	m_terrain.Render(pDevice);
+	if (baseORdetail)
+		m_terrain1.Render(pDevice);
+		
+	else
+		m_terrain2.Render(pDevice);
 
 	//Display framerate and instructions
 	m_pTextSprite->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_SORT_TEXTURE);
@@ -252,6 +264,11 @@ void CGameApp::ProcessInput(long xDelta, long yDelta, long zDelta, BOOL* pMouseB
 		{
 			m_pFramework->ToggleWireframe();
 		}
+	}
+	if (pPressedKeys[DIK_F7])
+	{
+		m_pFramework->LockKey(DIK_F7);
+		baseORdetail = !baseORdetail;
 	}
 }
 

@@ -39,6 +39,17 @@ namespace cuCustomVertex
 		float Tu, Tv;
 	} PositionTextured;
 
+	typedef struct Position2Textured
+	{
+	public:
+		Position2Textured() : X(0), Y(0), Z(0), Tu1(0), Tv1(0), Tu2(0), Tv2(0) {}
+		Position2Textured(float x, float y, float z, float tu1, float tv1, float tu2, float tv2)
+			: X(x), Y(y), Z(z), Tu1(tu1), Tv1(tv1), Tu2(tu2), Tv2(tv2) {}
+		float X, Y, Z;
+		float Tu1, Tv1;
+		float Tu2, Tv2;
+	} Position2Textured;
+
 	//Position, color, texture coordinates
 	typedef struct PositionColorTextured
 	{

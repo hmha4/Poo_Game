@@ -55,7 +55,35 @@ void CTriangleStripPlane::GeneratePositionTexturedWithHeight(cuCustomVertex::Pos
 		}
 	}
 }
-
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Summary: Generates vertices with a position, normal, and two texture coordinates to create an indexed
+triangle strip plane.
+Parameters:
+[in/out] ppVertices - Pointer to an array to be filled up.
+[in] verticesAlongWidth - Number of vertices along the width
+[in] verticesAlongLength - Number of vertices along the length
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void CTriangleStripPlane::GeneratePosition2TexturedWithHeight(cuCustomVertex::Position2Textured** ppVertices,
+	int verticesAlongWidth, int verticesAlongLength, UCHAR* pHeight)
+{
+	SAFE_DELETE_ARRAY(*ppVertices);
+	*ppVertices = new cuCustomVertex::Position2Textured[verticesAlongLength * verticesAlongWidth];
+	for (int z = 0; z < verticesAlongLength; z++)
+	{
+		for (int x = 0; x < verticesAlongWidth; x++)
+		{
+			float halfWidth = ((float)verticesAlongWidth - 1.0f) / 2.0f;
+			float halfLength = ((float)verticesAlongLength - 1.0f) / 2.0f;
+			(*ppVertices)[z * verticesAlongLength + x] = cuCustomVertex::Position2Textured(
+				(float)x - halfWidth,
+				(float)pHeight[z * verticesAlongLength + x],
+				(float)z - halfLength,
+				(float)x / (verticesAlongWidth - 1), (float)z / (verticesAlongLength - 1),
+				(float)x / 10.0f, (float)z / 10.0f
+			);
+		}
+	}
+}
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 Summary: Generates 32-bit indices for an indexed triangle strip plane.
 Parameters:

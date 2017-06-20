@@ -15,7 +15,8 @@ class CTerrain : public CWorldTransform
 private:
 	CVertexBuffer m_vb;
 	CIndexBuffer m_ib;
-	LPDIRECT3DTEXTURE9 m_pTexture;
+	LPDIRECT3DTEXTURE9 m_pTextureBase;
+	LPDIRECT3DTEXTURE9 m_pTextureDetail;
 	UCHAR* m_pHeight;
 	UINT m_numVertices;
 	UINT m_numIndices;
@@ -23,7 +24,8 @@ public:
 	CTerrain();
 	~CTerrain() { Release(); }
 
-	BOOL Initialize(LPDIRECT3DDEVICE9 pDevice, char* rawFile, char* terrainTexture);
+	BOOL Initialize(LPDIRECT3DDEVICE9 pDevice, char* rawFile, char* baseTexture);
+	BOOL Initialize(LPDIRECT3DDEVICE9 pDevice, char* rawFile, char* baseTexture, char* detailTexture);
 	void Render(LPDIRECT3DDEVICE9 pDevice);
 	void Release();
 };

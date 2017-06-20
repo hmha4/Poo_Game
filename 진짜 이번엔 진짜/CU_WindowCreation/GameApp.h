@@ -25,12 +25,13 @@ private:
 	D3DLIGHT9       m_light;
 	CMesh           m_mesh;
 	CMeshInstance*  m_pTemple;
-	CTerrain        m_terrain;
+	CTerrain        m_terrain1;
+	CTerrain        m_terrain2;
 	CCamera         m_camera;
 
 	char m_fps[10];
 	BOOL m_showInstructions;
-
+	BOOL baseORdetail;
 public:
 	CGameApp();
 	~CGameApp() { Release(); }
