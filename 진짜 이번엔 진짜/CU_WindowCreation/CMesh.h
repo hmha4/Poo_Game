@@ -2,6 +2,8 @@
 #ifndef CMESH_H
 #define CMESH_H
 
+#include "stdafx.h"
+#include "CWorldTransform.h"
 
 class CMesh
 {
@@ -21,5 +23,19 @@ public:
 	D3DMATERIAL9* GetMeshMaterial(int i) { return &m_pMeshMaterials[i]; }
 	LPDIRECT3DTEXTURE9 GetMeshTexture(int i) { return m_ppMeshTextures[i]; }
 };
+
+class CMeshInstance : public CWorldTransform
+{
+private:
+	CMesh* m_pMesh;
+public:
+	CMeshInstance();
+	~CMeshInstance() { Release(); }
+
+	void Release();
+	void SetMesh(CMesh* pMesh);
+	void Render(LPDIRECT3DDEVICE9 pDevice);
+};
+
 
 #endif // !CMESH_H

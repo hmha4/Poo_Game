@@ -12,18 +12,17 @@
 #include "cuCustomVertex.h"
 #include "CFont.h"
 #include "CMesh.h"
-#include "CMeshInstance.h"
 
 class CGameApp : public CBaseApp
 {
 private:
-	CFramework* m_pFramework;
+	CFramework*     m_pFramework;
 	CWorldTransform m_transform;
-	CFont m_font;
-	LPD3DXSPRITE m_pTextSprite;
-	D3DLIGHT9 m_light;
-	CMesh m_mesh;
-	CMeshInstance* m_pTemple;
+	CFont           m_font;
+	LPD3DXSPRITE    m_pTextSprite;
+	D3DLIGHT9       m_light;
+	CMesh           m_mesh;
+	CMeshInstance*  m_pTemple;
 
 	char m_fps[10];
 	BOOL m_showInstructions;
@@ -40,7 +39,7 @@ public:
 	virtual void OnDestroyDevice();
 	virtual void OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime);
 	virtual void OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime);
-	virtual void OnKeyDown(WPARAM wParam);
+	virtual void ProcessInput(long xDelta, long yDelta, long zDelta, BOOL* pMouseButtons, BOOL* pPressedKeys, float elapsedTime);
 };
 
 #endif // !CGAMEAPP_H

@@ -60,14 +60,10 @@ void CGameApp::OnCreateDevice(LPDIRECT3DDEVICE9 pDevice)
 	m_mesh.Load(pDevice, "temple.x");
 	if (m_pTemple)
 	{
-		for (int i = 0; i < 2; i++)
-		{
-			m_pTemple[i].Release();
-		}
+		m_pTemple[0].Release();
 	}
 	m_pTemple = new CMeshInstance[2];
 	m_pTemple[0].SetMesh(&m_mesh);
-	m_pTemple[1].SetMesh(&m_mesh);
 	
 	//Create sprite for batching text calls
 	D3DXCreateSprite(pDevice, &m_pTextSprite);
@@ -93,7 +89,7 @@ void CGameApp::OnResetDevice(LPDIRECT3DDEVICE9 pDevice)
 
 	// Set transforms
 	D3DXVECTOR3 cameraPosition(0.0f, 8.0f, -15.0f);
-	D3DXVECTOR3 cameraTarget(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 cameraTarget(0.0f, 0.0f, 5.0f);
 	D3DXVECTOR3 cameraUp(0.0f, 1.0f, 0.0f);
 	D3DXMATRIX viewMatrix;
 	D3DXMatrixLookAtLH(&viewMatrix, &cameraPosition, &cameraTarget, &cameraUp);
@@ -143,10 +139,7 @@ void CGameApp::OnDestroyDevice()
 
 	if (m_pTemple)
 	{
-		for (int i = 0; i < 2; i++)
-		{
-			m_pTemple[i].Release();
-		}
+		m_pTemple[0].Release();
 	}
 	m_mesh.Release();
 }
@@ -158,13 +151,7 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
-	m_pTemple[0].SetXPosition(-5.0f);
-	m_pTemple[0].ScaleAbs(0.7f, 0.7f, 0.7f);
-	m_pTemple[0].RotateRel(0.0f, D3DXToRadian(10.0f) * elapsedTime, 0.0f);
-
-	m_pTemple[1].SetXPosition(5.0f);
-	m_pTemple[1].ScaleAbs(0.7f, 0.7f, 0.7f);
-	m_pTemple[1].RotateRel(0.0f, D3DXToRadian(10.0f) * elapsedTime, 0.0f);
+	
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * * *
@@ -180,10 +167,8 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 	pDevice->BeginScene();
 
 	//Render scene here
-	for (int i = 0; i < 2; i++)
-	{
-		m_pTemple[i].Render(pDevice);
-	}
+	
+	m_pTemple[0].Render(pDevice);
 
 	//Display framerate and instructions
 	m_pTextSprite->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_SORT_TEXTURE);
@@ -209,23 +194,93 @@ Summary: Responds to key presses
 Parameters:
 [in] wParam – Key down argument
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void CGameApp::OnKeyDown(WPARAM wParam)
+//void CGameApp::OnKeyDown(WPARAM wParam)
+//{
+//	switch (wParam)
+//	{
+//	case VK_ESCAPE:
+//		PostQuitMessage(0);
+//		break;
+//	case VK_F1:
+//		m_showInstructions = !m_showInstructions;
+//		break;
+//	case VK_F5:
+//		if (m_pFramework != NULL)
+//		{
+//			m_pFramework->ToggleFullscreen();
+//		}
+//		break;
+//	case VK_F6:
+//		if (m_pFramework != NULL)
+//		{
+//			m_pFramework->ToggleWireframe();
+//		}
+//	}
+//}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Summary: Responds to key presses
+Parameters:
+[in] xDelta – Change in mouse x-axis since last frame
+[in] yDelta – Change in mouse y-axis since last frame
+[in] zDelta – Change in mouse z-axis since last frame
+[in] pMouseButtons – Mouse button states
+[in] pPressedKeys – Keyboard keys that are pressed and not locked
+[in] elapsedTime – Time elapsed since last frame
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void CGameApp::ProcessInput(long xDelta, long yDelta, long zDelta, BOOL* pMouseButtons, BOOL* pPressedKeys, float elapsedTime)
 {
-	switch (wParam)
+	if (pMouseButtons[0])
 	{
-	case VK_ESCAPE:
+		m_pTemple[0].RotateRel(D3DXToRadian(yDelta * -0.5f), D3DXToRadian(xDelta * -0.5f), 0.0f);
+	}
+	if (pPressedKeys[DIK_W])
+	{
+		m_pTemple[0].TranslateRel(0.0f, 10.0f * elapsedTime, 0.0f);
+	}
+	if (pPressedKeys[DIK_A])
+	{
+		m_pTemple[0].TranslateRel(-10.0f * elapsedTime, 0.0f, 0.0f);
+	}
+	if (pPressedKeys[DIK_S])
+	{
+		m_pTemple[0].TranslateRel(0.0f, -10.0f * elapsedTime, 0.0f);
+	}
+	if (pPressedKeys[DIK_D])
+	{
+		m_pTemple[0].TranslateRel(10.0f * elapsedTime, 0.0f, 0.0f);
+	}
+	if (pPressedKeys[DIK_Q])
+	{
+		float factor = -1.0f * elapsedTime;
+		m_pTemple[0].ScaleRel(factor, factor, factor);
+	}
+	if (pPressedKeys[DIK_E])
+	{
+		float factor = 1.0f * elapsedTime;
+		m_pTemple[0].ScaleRel(factor, factor, factor);
+	}
+	if (pPressedKeys[DIK_ESCAPE])
+	{
+		m_pFramework->LockKey(DIK_ESCAPE);
 		PostQuitMessage(0);
-		break;
-	case VK_F1:
+	}
+	if (pPressedKeys[DIK_F1])
+	{
+		m_pFramework->LockKey(DIK_F1);
 		m_showInstructions = !m_showInstructions;
-		break;
-	case VK_F5:
+	}
+	if (pPressedKeys[DIK_F5])
+	{
+		m_pFramework->LockKey(DIK_F5);
 		if (m_pFramework != NULL)
 		{
 			m_pFramework->ToggleFullscreen();
 		}
-		break;
-	case VK_F6:
+	}
+	if (pPressedKeys[DIK_F6])
+	{
+		m_pFramework->LockKey(DIK_F6);
 		if (m_pFramework != NULL)
 		{
 			m_pFramework->ToggleWireframe();

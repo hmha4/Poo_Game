@@ -51,7 +51,7 @@
     <ClCompile Include="CMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CMeshInstance.cpp">
+    <ClCompile Include="CInputDevice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,7 +98,7 @@
     <ClInclude Include="CMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CMeshInstance.h">
+    <ClInclude Include="CInputDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "CGraphics.h"
 #include "CTimer.h"
+#include "CInputDevice.h"
 
 //---------------------------------------------------------
 //Interface that the main game application must implement
@@ -20,7 +21,8 @@ public:
 	virtual void OnDestroyDevice() = 0;
 	virtual void OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime) = 0;
 	virtual void OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime) = 0;
-	virtual void OnKeyDown(WPARAM wParam) = 0;
+	virtual void ProcessInput(long xDelta, long yDelta, long zDelta, BOOL* pMouseButtons, BOOL*
+		pPressedKeys, float elapsedTime) = 0;
 };
 
 class CFramework
@@ -53,6 +55,9 @@ private:
 	CGraphics* m_pGraphics;
 	CBaseApp* m_pGameApp;
 	CTimer * m_pTimer;
+	CInputDevice m_mouse;
+	CInputDevice m_keyboard;
+	LPDIRECTINPUT8 m_pDI;
 
 public:
 	CFramework(CBaseApp* pGameApp);
@@ -63,6 +68,9 @@ public:
 	void ToggleFullscreen();
 	void ToggleWireframe();
 	static LRESULT CALLBACK StaticWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	void LockKey(DWORD key);
+	long GetXCursor();
+	long GetYCursor();
 	DWORD GetFillMode();
 	int GetWidth();
 	int GetHeight();

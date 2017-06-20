@@ -79,6 +79,22 @@ BOOL CFramework::Initialize(char* title, HINSTANCE hInstance, int width, int hei
 	{
 		return FALSE;
 	}
+
+	//Initialize DirectInput
+	if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_pDI, NULL)))
+	{
+		SHOWERROR("DirectInput8() - Failed", __FILE__, __LINE__);
+		return FALSE;
+	}
+	if (!m_mouse.Initialize(m_pDI, m_hWnd, DIT_MOUSE))
+	{
+		return FALSE;
+	}
+	if (!m_keyboard.Initialize(m_pDI, m_hWnd, DIT_KEYBOARD))
+	{
+		return FALSE;
+	}
+
 	m_fullscreenWidth = m_pGraphics->GetDisplayMode()->Width;
 	m_fullscreenHeight = m_pGraphics->GetDisplayMode()->Height;
 
@@ -172,7 +188,19 @@ void CFramework::OnUpdateFrame()
 
 	if (m_pGameApp != NULL && m_pGraphics != NULL && m_pTimer!= NULL)
 	{
-		m_pGameApp->OnUpdateFrame(m_pGraphics->GetDevice(), m_pTimer->GetElapsedTime());
+		float elapsedTime = m_pTimer->GetElapsedTime();
+		//Send out input data
+		m_mouse.Read();
+		m_keyboard.Read();
+		long xDelta = m_mouse.GetXDelta();
+		long yDelta = m_mouse.GetYDelta();
+		long zDelta = m_mouse.GetZDelta();
+		BOOL * pMouseButtons = m_mouse.GetButtons();
+		BOOL * pPressedKeys = m_keyboard.GetKeys();
+		m_pGameApp->ProcessInput(xDelta, yDelta, zDelta, pMouseButtons, pPressedKeys, elapsedTime);
+		
+		//Send out OnupdateFrame
+		m_pGameApp->OnUpdateFrame(m_pGraphics->GetDevice(), elapsedTime);
 	}
 }
 
@@ -301,6 +329,17 @@ void CFramework::Pause(BOOL rendering, BOOL timer)
 		m_pTimer->Start();
 	}
 }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Summary: Locks a key so it is only read once per key down.
+Parameters:
+[in] key - Key to lock. DIK_code
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void CFramework::LockKey(DWORD key)
+{
+	m_keyboard.LockKey(key);
+}
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 Summary: Event handler. Routes messages to appropriate instance.
 Parameters:
@@ -370,15 +409,25 @@ LRESULT CALLBACK CFramework::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
 			}
 		}
 		return 0;
-	case WM_KEYDOWN:
-		//Send keystrokes to application to handle
-		if (m_pGameApp != NULL)
-		{
-			m_pGameApp->OnKeyDown(wParam);
-		}
-		return 0;
+	
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Summary: Gets x coordinate of the mouse in client coordinates.
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+long CFramework::GetXCursor()
+{
+	return m_mouse.GetX();
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Summary: Gets y coordinate of the mouse in client coordinates.
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+long CFramework::GetYCursor()
+{
+	return m_mouse.GetY();
 }
 
 /* * * * * * * * * * ** * * * * * * * * * * * * * * * * * * * * * * *
