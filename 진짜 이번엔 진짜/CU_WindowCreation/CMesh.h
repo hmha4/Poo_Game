@@ -28,6 +28,7 @@ class CMeshInstance : public CWorldTransform
 {
 private:
 	CMesh* m_pMesh;
+	float m_boundingRadius;
 public:
 	CMeshInstance();
 	~CMeshInstance() { Release(); }
@@ -35,6 +36,8 @@ public:
 	void Release();
 	void SetMesh(CMesh* pMesh);
 	void Render(LPDIRECT3DDEVICE9 pDevice);
+
+	float GetBoundingRadius() { return m_boundingRadius; }
 };
 
 

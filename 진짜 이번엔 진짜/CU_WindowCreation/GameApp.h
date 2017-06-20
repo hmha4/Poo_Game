@@ -29,6 +29,14 @@ private:
 	CTerrain        m_terrain2;
 	CCamera         m_camera;
 
+	CMesh			m_boxMesh;
+	CMeshInstance   m_box;
+	LPD3DXMESH      m_pSphere;
+	BOOL            m_displaySphere;
+	CVertexBuffer   m_floor;
+	LPDIRECT3DTEXTURE9 m_pStone;
+	char            m_info[40];
+
 	char m_fps[10];
 	BOOL m_showInstructions;
 	BOOL baseORdetail;

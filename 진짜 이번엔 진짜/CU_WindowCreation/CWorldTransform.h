@@ -11,6 +11,7 @@ protected:
 	D3DXMATRIX m_rotate;
 	D3DXMATRIX m_scale;
 	D3DXMATRIX m_transform;
+	D3DXVECTOR3 m_position;
 	float m_rotationX, m_rotationY, m_rotationZ;
 public:
 	CWorldTransform();
@@ -25,7 +26,7 @@ public:
 	void ScaleRel(float x, float y, float z);
 
 	D3DXMATRIX* GetTransform();
-
+	D3DXVECTOR3* GetPosition() { return &m_position; }
 	float GetXPosition() { return m_translate._41; }
 	float GetYPosition() { return m_translate._42; }
 	float GetZPosition() { return m_translate._43; }

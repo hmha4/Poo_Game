@@ -14,6 +14,7 @@ void CWorldTransform::Reset()
 	D3DXMatrixIdentity(&m_rotate);
 	D3DXMatrixIdentity(&m_scale);
 	D3DXMatrixIdentity(&m_transform);
+	m_position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rotationX = m_rotationY = m_rotationZ = 0.0f;
 }
 
@@ -29,6 +30,9 @@ void CWorldTransform::TranslateAbs(float x, float y, float z)
 	m_translate._41 = x;
 	m_translate._42 = y;
 	m_translate._43 = z;
+	m_position.x = x;
+	m_position.y = y;
+	m_position.z = z;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -43,6 +47,9 @@ void CWorldTransform::TranslateRel(float x, float y, float z)
 	m_translate._41 += x;
 	m_translate._42 += y;
 	m_translate._43 += z;
+	m_position.x += x;
+	m_position.y += y;
+	m_position.z += z;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

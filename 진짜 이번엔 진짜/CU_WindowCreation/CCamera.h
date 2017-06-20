@@ -6,6 +6,8 @@
 class CCamera
 {
 private:
+	void BuildViewFrustum();
+
 	D3DXMATRIX  m_view;
 	D3DXMATRIX  m_projection;
 	D3DXVECTOR3 m_right;
@@ -14,6 +16,7 @@ private:
 	D3DXVECTOR3 m_position;
 	D3DXVECTOR3 m_lookAt;
 	D3DXVECTOR3 m_velocity;
+	D3DXPLANE   m_frustum[6];
 	float       m_yaw;
 	float       m_pitch;
 	float       m_maxPitch;
@@ -35,6 +38,7 @@ public:
 	void Pitch(float radians);
 	void Roll(float radians);
 	void Update();
+	BOOL SphereInFrustum(D3DXVECTOR3* pPosition, float radius);
 
 	void SetPosition(D3DXVECTOR3* pPosition);
 	void SetLookAt(D3DXVECTOR3* pLookAt);

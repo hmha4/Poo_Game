@@ -159,6 +159,9 @@ void CCamera::Update()
 	D3DXVECTOR3 up = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	D3DXMatrixLookAtLH(&m_view, &m_position, &m_lookAt, &up);
 
+	//Calculate new View frustum
+	BuildViewFrustum();
+
 	// Set the camera axes from the view matrix
 	m_right.x = m_view._11;
 	m_right.y = m_view._21;
@@ -174,6 +177,77 @@ void CCamera::Update()
 	float lookLengthOnXZ = sqrtf(m_look.z * m_look.z + m_look.x * m_look.x);
 	m_pitch = atan2f(m_look.y, lookLengthOnXZ);
 	m_yaw = atan2f(m_look.x, m_look.z);
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Summary: Build the view frustum planes using the current view/projection matrices
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void CCamera::BuildViewFrustum()
+{
+	D3DXMATRIX viewProjection;
+	D3DXMatrixMultiply(&viewProjection, &m_view, &m_projection);
+	//D3DXMatrixMultiply( &viewProjection, &m_mView, &m_mProjection );
+	// Left plane
+	m_frustum[0].a = viewProjection._14 + viewProjection._11;
+	m_frustum[0].b = viewProjection._24 + viewProjection._21;
+	m_frustum[0].c = viewProjection._34 + viewProjection._31;
+	m_frustum[0].d = viewProjection._44 + viewProjection._41;
+
+	// Right plane
+	m_frustum[1].a = viewProjection._14 - viewProjection._11;
+	m_frustum[1].b = viewProjection._24 - viewProjection._21;
+	m_frustum[1].c = viewProjection._34 - viewProjection._31;
+	m_frustum[1].d = viewProjection._44 - viewProjection._41;
+
+	// Top plane
+	m_frustum[2].a = viewProjection._14 - viewProjection._12;
+	m_frustum[2].b = viewProjection._24 - viewProjection._22;
+	m_frustum[2].c = viewProjection._34 - viewProjection._32;
+	m_frustum[2].d = viewProjection._44 - viewProjection._42;
+
+	// Bottom plane
+	m_frustum[3].a = viewProjection._14 + viewProjection._12;
+	m_frustum[3].b = viewProjection._24 + viewProjection._22;
+	m_frustum[3].c = viewProjection._34 + viewProjection._32;
+	m_frustum[3].d = viewProjection._44 + viewProjection._42;
+
+	// Near plane
+	m_frustum[4].a = viewProjection._13;
+	m_frustum[4].b = viewProjection._23;
+	m_frustum[4].c = viewProjection._33;
+	m_frustum[4].d = viewProjection._43;
+
+	// Far plane
+	m_frustum[5].a = viewProjection._14 - viewProjection._13;
+	m_frustum[5].b = viewProjection._24 - viewProjection._23;
+	m_frustum[5].c = viewProjection._34 - viewProjection._33;
+	m_frustum[5].d = viewProjection._44 - viewProjection._43;
+
+	// Normalize planes
+	for (int i = 0; i < 6; i++)
+	{
+		D3DXPlaneNormalize(&m_frustum[i], &m_frustum[i]);
+	}
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Summary: Checks whether a sphere is inside the camera's view frustum.
+Parameters:
+[in] pPosition - Position of the sphere.
+[in] radius - Radius of the sphere.
+Returns: TRUE if the sphere is in the frustum, FALSE otherwise
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+BOOL CCamera::SphereInFrustum(D3DXVECTOR3* pPosition, float radius)
+{
+	for (int i = 0; i < 6; i++)
+	{
+		if (D3DXPlaneDotCoord(&m_frustum[i], pPosition) + radius < 0)
+		{
+			// Outside the frustum, reject it!
+			return FALSE;
+		}
+	}
+	return TRUE;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

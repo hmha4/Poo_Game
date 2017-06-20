@@ -83,6 +83,7 @@ BOOL CMesh::Load(LPDIRECT3DDEVICE9 pDevice, char* file)
 CMeshInstance::CMeshInstance()
 {
 	m_pMesh = NULL;
+	m_boundingRadius = 0.0f;
 }
 
 void CMeshInstance::Release()
@@ -100,6 +101,27 @@ void CMeshInstance::SetMesh(CMesh* pMesh)
 {
 	Release();
 	m_pMesh = pMesh;
+
+	//Compute bounding sphere
+	if (m_pMesh)
+	{
+		D3DXVECTOR3 center;
+		LPD3DXMESH pD3DXMesh = m_pMesh->GetMesh();
+		DWORD numVertices = pD3DXMesh->GetNumVertices();
+		DWORD fvfSize = D3DXGetFVFVertexSize(pD3DXMesh->GetFVF());
+		char* pData = NULL;
+		if (FAILED(pD3DXMesh->LockVertexBuffer(0, (void**)&pData)))
+		{
+			SHOWERROR("Failed to lock mesh vertex buffer.", __FILE__, __LINE__);
+			return;
+		}
+		D3DXComputeBoundingSphere((D3DXVECTOR3*)pData, numVertices, fvfSize, &center, &m_boundingRadius);
+		if (FAILED(pD3DXMesh->UnlockVertexBuffer()))
+		{
+			SHOWERROR("Failed to unlock mesh vertex buffer.", __FILE__, __LINE__);
+			return;
+		}
+	}
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

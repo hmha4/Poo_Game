@@ -6,8 +6,10 @@ char* g_instructions = "Esc: Quit\r\nF5: Toggle fullscreen\r\nF6: Toggle wirefra
 CGameApp::CGameApp()
 {
 	m_pFramework = NULL;
-	m_pTemple = NULL;
 	m_showInstructions = FALSE;
+	m_pSphere = NULL;
+	m_displaySphere = FALSE;
+	m_pStone = NULL;
 	baseORdetail = FALSE;
 }
 
@@ -34,8 +36,9 @@ Returns: TRUE on success, FALSE on failure
 BOOL CGameApp::Initialize()
 {
 	m_camera.SetMaxVelocity(100.0f);
-	m_camera.SetPosition(new D3DXVECTOR3(0.0f, 20.0f, 0.0f));
-	m_camera.SetLookAt(new D3DXVECTOR3(-20.0f, 15.0f, 10.0f));
+	m_camera.SetMaxPitch(D3DXToRadian(85.0f));
+	m_camera.SetPosition(new D3DXVECTOR3(0.0f, 5.0f, -5.0f));
+	m_camera.SetLookAt(new D3DXVECTOR3(8.0f, 0.0f, 5.0f));
 	m_camera.Update();
 
 	return TRUE;
@@ -57,8 +60,29 @@ void CGameApp::OnCreateDevice(LPDIRECT3DDEVICE9 pDevice)
 	//Create 2D text
 	m_font.Initialize(pDevice, "Arial", 12);
 
+	m_boxMesh.Load(pDevice, "box.x");
+	m_box.SetMesh(&m_boxMesh);
+
+	//Bounding sphere mesh
+	D3DXCreateSphere(pDevice, m_box.GetBoundingRadius(), 8, 8, &m_pSphere, NULL);
 	
-	m_terrain1.Initialize(pDevice, "heightMap.raw", "terrain_base_texture.jpg");
+	// Floor
+	m_floor.CreateBuffer(pDevice, 6, D3DFVF_XYZ | D3DFVF_TEX1, sizeof(cuCustomVertex::PositionTextured));
+	cuCustomVertex::PositionTextured verts[6];
+	verts[0] = cuCustomVertex::PositionTextured(-10.0f, -0.5f, -10.0f, 0.0f, 100.0f);
+	verts[1] = cuCustomVertex::PositionTextured(-10.0f, -0.5f, 100.0f, 0.0f, 0.0f);
+	verts[2] = cuCustomVertex::PositionTextured(100.0f, -0.5f, -10.0f, 100.0f, 100.0f);
+	verts[3] = cuCustomVertex::PositionTextured(-10.0f, -0.5f, 100.0f, 0.0f, 0.0f);
+	verts[4] = cuCustomVertex::PositionTextured(100.0f, -0.5f, 100.0f, 100.0f, 0.0f);
+	verts[5] = cuCustomVertex::PositionTextured(100.0f, -0.5f, -10.0f, 100.0f, 100.0f);
+	m_floor.SetData(6, &verts, 0);
+
+	// Floor texture
+	char path[MAX_PATH];
+	CUtility::GetMediaFile("stone.jpg", path);
+	D3DXCreateTextureFromFile(pDevice, path, &m_pStone);
+
+	/*m_terrain1.Initialize(pDevice, "heightMap.raw", "terrain_base_texture.jpg");
 	m_terrain1.ScaleAbs(0.5f, 0.15f, 0.5f);
 	m_terrain1.RotateAbs(0, 1.5f, 0);
 	m_terrain1.TranslateAbs(0, -7, 0);
@@ -66,7 +90,7 @@ void CGameApp::OnCreateDevice(LPDIRECT3DDEVICE9 pDevice)
 	m_terrain2.Initialize(pDevice, "heightMap.raw", "terrain_base_texture.jpg", "terrain_detail_texture.jpg");
 	m_terrain2.ScaleAbs(0.5f, 0.15f, 0.5f);
 	m_terrain2.RotateAbs(0, 1.5f, 0);
-	m_terrain2.TranslateAbs(0, -7, 0);
+	m_terrain2.TranslateAbs(0, -7, 0);*/
 	
 }
 
@@ -122,9 +146,13 @@ all D3DPOOL_MANAGED resources.
 void CGameApp::OnDestroyDevice()
 {
 	SAFE_RELEASE(m_pTextSprite);
+	SAFE_RELEASE(m_pStone);
+	SAFE_RELEASE(m_pSphere);
 	m_font.Release();
-	m_terrain1.Release();
-	m_terrain2.Release();
+	m_box.Release();
+	m_boxMesh.Release();
+	/*m_terrain1.Release();
+	m_terrain2.Release();*/
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -145,21 +173,53 @@ Parameters:
 void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
 	pDevice->SetTransform(D3DTS_VIEW, m_camera.GetViewMatrix());
-	sprintf(m_fps, "%.2f fps", m_pFramework->GetFPS());
+	
 
-	pDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(100, 200, 255), 1.0f, 0);
+	pDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
 	pDevice->BeginScene();
 
 	//Render scene here
-	if (baseORdetail)
+	/*if (baseORdetail)
 		m_terrain1.Render(pDevice);
 		
 	else
-		m_terrain2.Render(pDevice);
+		m_terrain2.Render(pDevice);*/
+	// Render floor
+	D3DXMATRIX identity;
+	D3DXMatrixIdentity(&identity);
+	pDevice->SetTransform(D3DTS_WORLD, &identity);
+	pDevice->SetTexture(0, m_pStone);
+	m_floor.Render(pDevice, 2, D3DPT_TRIANGLELIST);
+
+	//Render crates
+	int count = 0;
+	for (int i = 0; i < 30; i++)
+	{
+		for (int j = 0; j < 30; j++)
+		{
+			m_box.TranslateAbs((float)i * 3.0f, 0.0f, (float)j * 3.0f);
+			if (m_camera.SphereInFrustum(m_box.GetPosition(), m_box.GetBoundingRadius()))
+			{
+				m_box.Render(pDevice);
+				count++;
+
+				if (m_displaySphere)
+				{
+					// Render bounding sphere
+					pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+					m_pSphere->DrawSubset(0);
+					pDevice->SetRenderState(D3DRS_FILLMODE, m_pFramework->GetFillMode());
+				}
+			}
+		}
+	}
+	sprintf(m_info, "Rendering %i of 900 crates.", count);
+	sprintf(m_fps, "%.2f fps", m_pFramework->GetFPS());
 
 	//Display framerate and instructions
 	m_pTextSprite->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_SORT_TEXTURE);
 	m_font.Print(m_fps, 5, 5, D3DCOLOR_XRGB(255, 0, 0), m_pTextSprite);
+	m_font.Print(m_info, 100, 5, D3DCOLOR_XRGB(255, 0, 0), m_pTextSprite);
 	if (m_showInstructions)
 	{
 		m_font.Print(g_instructions, 5, 20, D3DCOLOR_XRGB(255, 255, 255), m_pTextSprite);
@@ -218,10 +278,11 @@ Parameters:
 void CGameApp::ProcessInput(long xDelta, long yDelta, long zDelta, BOOL* pMouseButtons, BOOL* pPressedKeys, float elapsedTime)
 {
 	float cameraSpeed = 20.0f;
+	float mouseSensitivity = 0.005f;
 	if (pMouseButtons[0])
 	{
-		m_camera.Yaw(xDelta * elapsedTime * 1.8f);
-		m_camera.Pitch(yDelta * elapsedTime * 1.8);
+		m_camera.Yaw(xDelta * mouseSensitivity);
+		m_camera.Pitch(yDelta * mouseSensitivity);
 	}
 	if (pPressedKeys[DIK_W])
 	{
@@ -238,6 +299,11 @@ void CGameApp::ProcessInput(long xDelta, long yDelta, long zDelta, BOOL* pMouseB
 	if (pPressedKeys[DIK_D])
 	{
 		m_camera.Strafe(cameraSpeed * elapsedTime);
+	}
+	if (pPressedKeys[DIK_F])
+	{
+		m_pFramework->LockKey(DIK_F);
+		m_displaySphere = !m_displaySphere;
 	}
 	if (pPressedKeys[DIK_ESCAPE])
 	{
