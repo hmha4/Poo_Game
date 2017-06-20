@@ -11,20 +11,19 @@
 #include "CTriangleStripPlane.h"
 #include "cuCustomVertex.h"
 #include "CFont.h"
+#include "CMesh.h"
+#include "CMeshInstance.h"
 
 class CGameApp : public CBaseApp
 {
 private:
 	CFramework* m_pFramework;
-	CVertexBuffer m_vb;
-	CVertexBuffer m_vbDense;
-	CIndexBuffer m_ib;
 	CWorldTransform m_transform;
 	CFont m_font;
-	LPDIRECT3DTEXTURE9 m_pTexture;
-	LPD3DXMESH m_pTextMesh;
 	LPD3DXSPRITE m_pTextSprite;
 	D3DLIGHT9 m_light;
+	CMesh m_mesh;
+	CMeshInstance* m_pTemple;
 
 	char m_fps[10];
 	BOOL m_showInstructions;

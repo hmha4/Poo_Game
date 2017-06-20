@@ -1,14 +1,12 @@
 ﻿#include "stdafx.h"
 #include "GameApp.h"
 
-char * g_sometext = "Look how lovely all this text is. I think I could just writhe text all day. Did you know that if you cross a bull dog and a shih tzu, you get a bull shiht? Ok, that wasn't very good. What can I say? I've been writing tutorials all day.\nLook!\nA\nline\nbreak\nis\nused\nhere!"; 
 char* g_instructions = "Esc: Quit\r\nF5: Toggle fullscreen\r\nF6: Toggle wireframe";
 
 CGameApp::CGameApp()
 {
 	m_pFramework = NULL;
-	m_pTexture = NULL;
-	m_pTextMesh = NULL;
+	m_pTemple = NULL;
 	m_showInstructions = FALSE;
 }
 
@@ -58,34 +56,24 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void CGameApp::OnCreateDevice(LPDIRECT3DDEVICE9 pDevice)
 {
+	//Load meshes
+	m_mesh.Load(pDevice, "temple.x");
+	if (m_pTemple)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			m_pTemple[i].Release();
+		}
+	}
+	m_pTemple = new CMeshInstance[2];
+	m_pTemple[0].SetMesh(&m_mesh);
+	m_pTemple[1].SetMesh(&m_mesh);
+	
 	//Create sprite for batching text calls
 	D3DXCreateSprite(pDevice, &m_pTextSprite);
 
 	//Create 2D text
 	m_font.Initialize(pDevice, "Arial", 12);
-
-	//Create 3D text
-	SAFE_RELEASE(m_pTextMesh);
-	HFONT hFont = CreateFont(0, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
-		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial");
-
-	HDC hdc = CreateCompatibleDC(NULL);
-
-	//Save the old font
-	HFONT hFontOld = (HFONT)SelectObject(hdc, hFont);
-
-	//Create the text mesh
-	if (FAILED(D3DXCreateText(pDevice, hdc, "C_Unit", 0.01f, 0.4f, &m_pTextMesh, NULL, NULL)))
-	{
-		SHOWERROR("D3DXCreateText() - Failed.", __FILE__, __LINE__);
-	}
-
-	//Restore the old font and clean up
-	SelectObject(hdc, hFontOld);
-	DeleteObject(hFont);
-	DeleteDC(hdc);
-
-	
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
@@ -104,7 +92,7 @@ void CGameApp::OnResetDevice(LPDIRECT3DDEVICE9 pDevice)
 	m_font.OnResetDevice();
 
 	// Set transforms
-	D3DXVECTOR3 cameraPosition(0.0f, 2.0f, -5.0f);
+	D3DXVECTOR3 cameraPosition(0.0f, 8.0f, -15.0f);
 	D3DXVECTOR3 cameraTarget(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 cameraUp(0.0f, 1.0f, 0.0f);
 	D3DXMATRIX viewMatrix;
@@ -123,16 +111,7 @@ void CGameApp::OnResetDevice(LPDIRECT3DDEVICE9 pDevice)
 	pDevice->LightEnable(0, TRUE);
 	pDevice->SetLight(0, &m_light);
 
-	//Set a material
-	D3DMATERIAL9 material;
-	ZeroMemory(&material, sizeof(D3DMATERIAL9));
-	material.Diffuse.r = material.Ambient.r = 0.4f;
-	material.Diffuse.g = material.Ambient.g = 0.7f;
-	material.Diffuse.b = material.Ambient.b = 1.0f;
-	material.Diffuse.a = material.Ambient.a = 1.0f;
-	pDevice->SetMaterial(&material);
-
-	pDevice->SetTexture(0, m_pTexture);
+	
 }
 
 /* * * * * * * * * * * * * * * ** * * * * * * * * * * * * * * * * *
@@ -160,8 +139,16 @@ all D3DPOOL_MANAGED resources.
 void CGameApp::OnDestroyDevice()
 {
 	SAFE_RELEASE(m_pTextSprite);
-	SAFE_RELEASE(m_pTexture);
 	m_font.Release();
+
+	if (m_pTemple)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			m_pTemple[i].Release();
+		}
+	}
+	m_mesh.Release();
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -171,25 +158,13 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
-	//Move the light back and forth
-	static float xVelocity = 3.0f;
-	float x = m_light.Position.x;
-	x += xVelocity * elapsedTime;
-	if (x < -4.0f || x > 4.0f)
-	{
-		x -= xVelocity * elapsedTime;
-		xVelocity = -xVelocity;
-	}
-	m_light.Position.x = x;
-	m_light.Position.y = 3.0f;
-	m_light.Position.z = -5.0f;
+	m_pTemple[0].SetXPosition(-5.0f);
+	m_pTemple[0].ScaleAbs(0.7f, 0.7f, 0.7f);
+	m_pTemple[0].RotateRel(0.0f, D3DXToRadian(10.0f) * elapsedTime, 0.0f);
 
-		//Set the light to index 0 on the device
-	pDevice->SetLight(0, &m_light);
-	
-	m_transform.SetXPosition(-1.0f);
-	m_transform.RotateRel(D3DXToRadian(-90.0f) * elapsedTime, 0.0f, 0.0f);
-	pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
+	m_pTemple[1].SetXPosition(5.0f);
+	m_pTemple[1].ScaleAbs(0.7f, 0.7f, 0.7f);
+	m_pTemple[1].RotateRel(0.0f, D3DXToRadian(10.0f) * elapsedTime, 0.0f);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * * *
@@ -205,16 +180,13 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 	pDevice->BeginScene();
 
 	//Render scene here
-	m_font.Print("Printing text without a sprite like\r\nthis slows things down a bit.",
-		m_pFramework->GetWidth() - 300, m_pFramework->GetHeight() - 100, D3DCOLOR_XRGB(0, 200, 0));
+	for (int i = 0; i < 2; i++)
+	{
+		m_pTemple[i].Render(pDevice);
+	}
 
+	//Display framerate and instructions
 	m_pTextSprite->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_SORT_TEXTURE);
-	m_font.Print(g_sometext, 50, 100, D3DCOLOR_XRGB(255, 0, 0), m_pTextSprite, 200, 0, FA_CENTER);
-	m_font.Print("We can even align a bunch of text along the right side. Isn't that neat?",
-		m_pFramework->GetWidth() - 110, m_pFramework->GetHeight() - (m_pFramework->GetHeight() / 2) - 30,
-		D3DCOLOR_XRGB(200, 200, 255), m_pTextSprite, 100, 0, FA_RIGHT);
-
-	// Display framerate and instructions
 	m_font.Print(m_fps, 5, 5, D3DCOLOR_XRGB(255, 0, 0), m_pTextSprite);
 	if (m_showInstructions)
 	{
@@ -224,15 +196,7 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 	{
 		m_font.Print("Hit F1 to view the instructions.", 5, 20, D3DCOLOR_XRGB(255, 255, 255), m_pTextSprite);
 	}
-
 	m_pTextSprite->End();
-
-	// Render 3D text
-	if (m_pTextMesh)
-	{
-		m_pTextMesh->DrawSubset(0);
-	}
-
 	
 	
 
