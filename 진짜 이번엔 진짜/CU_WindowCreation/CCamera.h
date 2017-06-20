@@ -63,6 +63,8 @@ public:
 	float GetPitch() { return m_pitch; }
 	float GetYaw() { return m_yaw; }
 	float GetMaxPitch() { return m_maxPitch; }
+
+	
 };
 
 #endif // !CCAMERA_H

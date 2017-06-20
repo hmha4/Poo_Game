@@ -12,7 +12,7 @@ CFramework::CFramework(CBaseApp* pGameApp)
 
 	m_pGraphics = new CGraphics();
 	m_pTimer = new CTimer();
-	m_fillMode = D3DFILL_SOLID;
+	m_fillMode = D3DFILL_WIREFRAME;
 }
 
 void CFramework::Release()
