@@ -21,6 +21,7 @@ private:
 	CFramework*     m_pFramework;
 	CWorldTransform m_transform;
 	CFont           m_font;
+	LPD3DXMESH      m_pTextMesh;
 	LPD3DXSPRITE    m_pTextSprite;
 	D3DLIGHT9       m_light;
 	CMesh           m_mesh;
@@ -34,6 +35,7 @@ private:
 	LPD3DXMESH      m_pCSphere;
 	BOOL            m_displaySphere;
 	CVertexBuffer   m_floor;
+	CVertexBuffer   m_VB;
 
 	CVertexBuffer   m_skyL;
 	CVertexBuffer   m_skyR;
@@ -48,8 +50,7 @@ private:
 	LPDIRECT3DTEXTURE9 m_pBottom;
 	LPDIRECT3DTEXTURE9 m_pTop;
 	LPDIRECT3DTEXTURE9 m_pForward;
-	LPDIRECT3DTEXTURE9 m_pBack
-		;
+	LPDIRECT3DTEXTURE9 m_pBack;
 	char            m_info[40];
 
 	char m_fps[10];

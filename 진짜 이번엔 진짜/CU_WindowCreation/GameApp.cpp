@@ -2,6 +2,16 @@
 #include "GameApp.h"
 
 char* g_instructions = "WASD: Move\r\nClick and drag the mouse to look around\r\nF: Toggle bounding sphere display\r\nEsc: Quit\r\nF5: Toggle fullscreen\r\nF6: Toggle wireframe\nF7: Terrain";
+BOOL TrueFalse = FALSE;
+
+D3DXVECTOR3* g_positions;
+D3DXVECTOR3* g_speeds;
+
+struct CUSTOMVERTEX
+{
+	float x, y, z; // Position in 3d space
+	DWORD color;   // Color 
+};
 
 CGameApp::CGameApp()
 {
@@ -13,6 +23,7 @@ CGameApp::CGameApp()
 	m_pStone = NULL;
 	baseORdetail = FALSE;
 	m_pTemple = NULL;
+	m_pTextMesh = NULL;
 }
 
 //Clean up resources
@@ -42,6 +53,36 @@ BOOL CGameApp::Initialize()
 	m_camera.SetPosition(new D3DXVECTOR3(0.0f, 5.0f, -5.0f));
 	m_camera.SetLookAt(new D3DXVECTOR3(8.0f, 0.0f, 5.0f));
 	m_camera.Update();
+
+	// Create the light 
+	ZeroMemory(&m_light, sizeof(D3DLIGHT9));
+	m_light.Type = D3DLIGHT_POINT;
+	m_light.Diffuse.r = 1.0f;
+	m_light.Diffuse.g = 1.0f;
+	m_light.Diffuse.b = 1.0f;
+	m_light.Direction.x = -1.0f;
+	m_light.Direction.y = -1.0f;
+	m_light.Direction.z = 1.0f;
+	m_light.Range = 1000.0f;
+	m_light.Falloff = 1.0f;
+	m_light.Attenuation0 = 1.0f;
+	m_light.Theta = D3DXToRadian(10.0f);
+	m_light.Phi = D3DXToRadian(15.0f);
+
+	g_positions = new D3DXVECTOR3[1000];
+	g_speeds = new D3DXVECTOR3[1000];
+	// Seed random number generator 
+	srand((UINT)time(NULL));
+	for (int i = 0; i < 1000; i++)
+	{
+
+		g_speeds[i].x = ((float)rand() / RAND_MAX * 1000.0f - 500.0f) / 50.0f;
+		g_speeds[i].y = ((float)rand() / RAND_MAX * 1000.0f - 500.0f) / 50.0f;
+		g_speeds[i].z = ((float)rand() / RAND_MAX * 1000.0f - 500.0f) / 50.0f;
+		g_positions[i].x = g_positions[i].y = g_positions[i].z = 0.0f;
+
+	}
+
 	return TRUE;
 }
 
@@ -227,6 +268,27 @@ void CGameApp::OnCreateDevice(LPDIRECT3DDEVICE9 pDevice)
 	m_terrain2.ScaleAbs(0.8f, 0.18f, 0.8f);
 	m_terrain2.RotateAbs(0, 1.5f, 0);
 	m_terrain2.TranslateAbs(0, -7, 0);
+
+	//Text3D
+	SAFE_RELEASE(m_pTextMesh);
+	HFONT hFont = CreateFont(0, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Arial");
+
+	HDC hdc = CreateCompatibleDC(NULL);
+
+	// Save the old font 
+	HFONT hFontOld = (HFONT)SelectObject(hdc, hFont);
+
+	// Create the text mesh 
+	if (FAILED(D3DXCreateText(pDevice, hdc, "DirectX", 1.01f, 0.4f, &m_pTextMesh, NULL, NULL)))
+	{
+
+		SHOWERROR("D3DXCreateText() – Failed", __FILE__, __LINE__);
+	}
+	// Restore the old font and clean up 
+	SelectObject(hdc, hFontOld);
+	DeleteObject(hFont);
+	DeleteDC(hdc);
 	
 	
 }
@@ -243,19 +305,20 @@ Parameters:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void CGameApp::OnResetDevice(LPDIRECT3DDEVICE9 pDevice)
 {
+	// Create the buffer
+	m_VB.CreateBuffer(pDevice, 1000, D3DFVF_XYZ | D3DFVF_DIFFUSE, sizeof(CUSTOMVERTEX), TRUE);
+
 	m_pTextSprite->OnResetDevice();
 	m_font.OnResetDevice();
-
+	
 	// Set transforms
 	m_camera.SetAspectRatio((float)m_pFramework->GetWidth() / (float)m_pFramework->GetHeight());
 	pDevice->SetTransform(D3DTS_PROJECTION, m_camera.GetProjectionMatrix());
 	
 	//Set up the render states
-	pDevice->SetRenderState(D3DRS_FILLMODE, m_pFramework->GetFillMode());
-	pDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
-	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-	
+	float pointSize = 4.0f;
+	pDevice->SetRenderState(D3DRS_POINTSIZE, *((DWORD*)&pointSize));
 }
 
 /* * * * * * * * * * * * * * * ** * * * * * * * * * * * * * * * * *
@@ -270,6 +333,7 @@ void CGameApp::OnLostDevice()
 {
 	m_pTextSprite->OnLostDevice();
 	m_font.OnLostDevice();
+	m_VB.Release();
 }
 
 /* * * * * * * * * *  * * * * * * * * * * * * * * * * * * * * * * * *
@@ -283,10 +347,15 @@ all D3DPOOL_MANAGED resources.
 void CGameApp::OnDestroyDevice()
 {
 	SAFE_RELEASE(m_pTextSprite);
+	SAFE_RELEASE(m_pTextMesh);
 	SAFE_RELEASE(m_pStone);
 	SAFE_RELEASE(m_pLeft);
 	SAFE_RELEASE(m_pSphere);
 	m_font.Release();
+	for (int i = 0; i < 36; i++)
+	{
+		m_pTemple[i].Release();
+	}
 	m_box.Release();
 	m_boxMesh.Release();
 	m_terrain2.Release();
@@ -300,7 +369,68 @@ Parameters:
 void CGameApp::OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
 	m_camera.Update();
-	
+
+	if (TrueFalse)
+	{
+		pDevice->SetRenderState(D3DRS_FILLMODE, m_pFramework->GetFillMode());
+		pDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+		pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+		pDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(100, 100, 100));
+		pDevice->LightEnable(0, TRUE);
+		pDevice->SetLight(0, &m_light);
+	}
+	else
+	{
+		pDevice->SetRenderState(D3DRS_FILLMODE, m_pFramework->GetFillMode());
+		pDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+		pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	}
+
+	// Set a material 
+	D3DMATERIAL9 material;
+	ZeroMemory(&material, sizeof(D3DMATERIAL9));
+	material.Diffuse.r = material.Ambient.r = 0.4f;
+	material.Diffuse.g = material.Ambient.g = 1.7f;
+	material.Diffuse.b = material.Ambient.b = 2.0f;
+	material.Diffuse.a = material.Ambient.a = 1.0f;
+	pDevice->SetMaterial(&material);
+
+	CUSTOMVERTEX verts[1000];
+	for (int i = 0; i < 1000; i++)
+	{
+		g_positions[i] += g_speeds[i] * elapsedTime;
+		// Constrain points 
+		if (g_positions[i].x < -7.0f || g_positions[i].x > 7.0f ||
+			g_positions[i].y < -5.0f || g_positions[i].y > 5.0f ||
+			g_positions[i].z < -7.0f || g_positions[i].z > 7.0f)
+		{
+			g_positions[i].x = 0.0f;
+			g_positions[i].y = 0.0f;
+			g_positions[i].z = 0.0f;
+		}
+		// Form colors based on distance from origin 
+		// Lots of parabola shift and squeeze math going on. 
+		float distanceFromOrigin = D3DXVec3Length(&g_positions[i]);
+		int red = -(int)(distanceFromOrigin * distanceFromOrigin * 15.0f) + 255;
+		red = (red < 0) ? 0 : red;
+		red = (red > 255) ? 255 : red;
+		int green = -(int)((distanceFromOrigin - 5) * (distanceFromOrigin - 5) * 15) + 255;
+		green = (green < 0) ? 0 : green;
+		green = (green > 255) ? 255 : green;
+		int blue = -(int)((distanceFromOrigin - 8) * (distanceFromOrigin - 8) * 15) + 255;
+		blue = (blue < 0) ? 0 : blue;
+		blue = (blue > 255) ? 255 : blue;
+		D3DCOLOR color = D3DCOLOR_XRGB(red, green, blue);
+		ZeroMemory(&verts[i], sizeof(CUSTOMVERTEX));
+		verts[i].x = g_positions[i].x;
+		verts[i].y = g_positions[i].y;
+		verts[i].z = g_positions[i].z;
+		verts[i].color = color;
+
+	}
+	// Fill up the buffer with the new vertices 
+	m_VB.SetData(1000, verts);
+
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * * *
@@ -315,6 +445,8 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 
 	pDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
 	pDevice->BeginScene();
+
+	
 
 	//Render scene here
 	if (!baseORdetail)
@@ -422,13 +554,29 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 		m_skyBack.Render(pDevice, 2, D3DPT_TRIANGLELIST);
 
 		m_terrain2.Render(pDevice);
+
+		m_transform.SetXScale(30);
+		m_transform.SetYScale(30);
+		m_transform.SetZScale(30);
+		m_transform.SetYPosition(150);
+		pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
+		m_VB.Render(pDevice, 1000, D3DPT_POINTLIST);
 	}
 	else
 	{
-		// Render Temple
-		for (int i = 0; i < 36; i++)
+		//Render 3D text
+		if (m_pTextMesh)
 		{
-			m_pTemple[i].Render(pDevice);
+			D3DXMATRIX _3DText;
+			m_transform.SetXPosition(40);
+			m_transform.SetYPosition(10);
+			m_transform.SetZPosition(40);
+			m_transform.SetXScale(3);
+			m_transform.SetYScale(3);
+			m_transform.SetZScale(3);
+			m_transform.RotateRel(0.0f, D3DXToRadian(-90.0f) * elapsedTime, 0.0f);
+			pDevice->SetTransform(D3DTS_WORLD, m_transform.GetTransform());
+			m_pTextMesh->DrawSubset(0);
 		}
 		
 		// Render floor
@@ -437,6 +585,8 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 		pDevice->SetTransform(D3DTS_WORLD, &identity);
 		pDevice->SetTexture(0, m_pStone);
 		m_floor.Render(pDevice, 2, D3DPT_TRIANGLELIST);
+
+		
 
 		//Render crates
 		int count = 0;
@@ -447,8 +597,7 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 				m_box.TranslateAbs((float)i * 3.0f, 0.0f, (float)j * 3.0f);
 				if (m_camera.SphereInFrustum(m_box.GetPosition(), m_box.GetBoundingRadius()))
 				{
-					m_box.Render(pDevice);
-					count++;
+					
 
 					if (m_displaySphere)
 					{
@@ -456,15 +605,27 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 						pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 						m_pSphere->DrawSubset(0);
 						pDevice->SetRenderState(D3DRS_FILLMODE, m_pFramework->GetFillMode());
-						
+
 					}
+					m_box.Render(pDevice);
+					count++;
 				}
 			}
 		}
-
 		sprintf(m_info, "Rendering %i of 900 crates.", count);
 		sprintf(m_fps, "%.2f fps", m_pFramework->GetFPS());
+
+		// Render Temple
+		for (int i = 0; i < 36; i++)
+		{
+			m_pTemple[i].Render(pDevice);
+		}
+
 	}
+
+	
+	
+
 	//Display framerate and instructions
 	m_pTextSprite->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_SORT_TEXTURE);
 	m_font.Print(m_fps, 5, 5, D3DCOLOR_XRGB(255, 0, 0), m_pTextSprite);
@@ -567,11 +728,17 @@ void CGameApp::ProcessInput(long xDelta, long yDelta, long zDelta, BOOL* pMouseB
 		m_pFramework->LockKey(DIK_ESCAPE);
 		PostQuitMessage(0);
 	}
+	if (pPressedKeys[DIK_F4])
+	{
+		m_pFramework->LockKey(DIK_F4);
+		TrueFalse = !TrueFalse;
+	}
 	if (pPressedKeys[DIK_F1])
 	{
 		m_pFramework->LockKey(DIK_F1);
 		m_showInstructions = !m_showInstructions;
 	}
+	
 	if (pPressedKeys[DIK_F5])
 	{
 		m_pFramework->LockKey(DIK_F5);

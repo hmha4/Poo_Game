@@ -17,7 +17,6 @@ private:
 public:
 	CFont();
 	~CFont() { Release(); }
-
 	BOOL Initialize(LPDIRECT3DDEVICE9 pDevice, char* faceName, int size, BOOL bold = FALSE,
 		BOOL italic = FALSE);
 	void Print(char* text, int xPosition, int yPosition, DWORD color, LPD3DXSPRITE sprite = NULL,
