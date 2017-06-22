@@ -34,7 +34,22 @@ private:
 	LPD3DXMESH      m_pCSphere;
 	BOOL            m_displaySphere;
 	CVertexBuffer   m_floor;
+
+	CVertexBuffer   m_skyL;
+	CVertexBuffer   m_skyR;
+	CVertexBuffer   m_skyB;
+	CVertexBuffer   m_skyT;
+	CVertexBuffer   m_skyF;
+	CVertexBuffer   m_skyBack;
+
 	LPDIRECT3DTEXTURE9 m_pStone;
+	LPDIRECT3DTEXTURE9 m_pLeft;
+	LPDIRECT3DTEXTURE9 m_pRight;
+	LPDIRECT3DTEXTURE9 m_pBottom;
+	LPDIRECT3DTEXTURE9 m_pTop;
+	LPDIRECT3DTEXTURE9 m_pForward;
+	LPDIRECT3DTEXTURE9 m_pBack
+		;
 	char            m_info[40];
 
 	char m_fps[10];

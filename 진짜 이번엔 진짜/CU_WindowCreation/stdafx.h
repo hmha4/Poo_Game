@@ -29,6 +29,7 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <dinput.h>
+#include <d3dx9math.h>
 
 #include <ctime>
 #include <fstream>
