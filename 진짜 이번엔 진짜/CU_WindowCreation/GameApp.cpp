@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "GameApp.h"
 
-char* g_instructions = "WASD: Move\r\nClick and drag the mouse to look around\r\nF: Toggle bounding sphere display\r\nEsc: Quit\r\nF5: Toggle fullscreen\r\nF6: Toggle wireframe\nF7: Terrain";
+char* g_instructions = "WASD: Move\r\nClick and drag the mouse to look around\r\nF: Toggle bounding sphere display\r\nEsc: Quit\r\nF4: Light\nF5: Toggle fullscreen\r\nF6: Toggle wireframe\nF7: Terrain";
 BOOL TrueFalse = FALSE;
 
 D3DXVECTOR3* g_positions;
@@ -586,8 +586,6 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 		pDevice->SetTexture(0, m_pStone);
 		m_floor.Render(pDevice, 2, D3DPT_TRIANGLELIST);
 
-		
-
 		//Render crates
 		int count = 0;
 		for (int i = 0; i < 30; i++)
@@ -597,15 +595,12 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 				m_box.TranslateAbs((float)i * 3.0f, 0.0f, (float)j * 3.0f);
 				if (m_camera.SphereInFrustum(m_box.GetPosition(), m_box.GetBoundingRadius()))
 				{
-					
-
 					if (m_displaySphere)
 					{
 						// Render bounding sphere
 						pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 						m_pSphere->DrawSubset(0);
 						pDevice->SetRenderState(D3DRS_FILLMODE, m_pFramework->GetFillMode());
-
 					}
 					m_box.Render(pDevice);
 					count++;
@@ -622,9 +617,6 @@ void CGameApp::OnRenderFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 		}
 
 	}
-
-	
-	
 
 	//Display framerate and instructions
 	m_pTextSprite->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_SORT_TEXTURE);
