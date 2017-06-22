@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "GameApp.h"
 
-char* g_instructions = "WASD: Move\r\nClick and drag the mouse to look around\r\nF: Toggle bounding sphere display\r\nEsc: Quit\r\nF4: Light\nF5: Toggle fullscreen\r\nF6: Toggle wireframe\nF7: Terrain";
+char* g_instructions = "WASD: Move\r\nClick and drag the mouse to look around\r\nF: Toggle bounding sphere display\r\nEsc: Quit\r\nF5: Toggle fullscreen\r\nF6: Toggle wireframe\nF7: Terrain\nF8: Light\n";
 BOOL TrueFalse = FALSE;
 
 D3DXVECTOR3* g_positions;
@@ -370,7 +370,7 @@ void CGameApp::OnUpdateFrame(LPDIRECT3DDEVICE9 pDevice, float elapsedTime)
 {
 	m_camera.Update();
 
-	if (TrueFalse)
+	if (!TrueFalse)
 	{
 		pDevice->SetRenderState(D3DRS_FILLMODE, m_pFramework->GetFillMode());
 		pDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
@@ -720,9 +720,9 @@ void CGameApp::ProcessInput(long xDelta, long yDelta, long zDelta, BOOL* pMouseB
 		m_pFramework->LockKey(DIK_ESCAPE);
 		PostQuitMessage(0);
 	}
-	if (pPressedKeys[DIK_F4])
+	if (pPressedKeys[DIK_F8])
 	{
-		m_pFramework->LockKey(DIK_F4);
+		m_pFramework->LockKey(DIK_F8);
 		TrueFalse = !TrueFalse;
 	}
 	if (pPressedKeys[DIK_F1])
@@ -776,7 +776,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 	}
 
 	//Initialize the Framework
-	if (!pFramework->Initialize("Lighting", hInstance, 640, 480, TRUE))
+	if (!pFramework->Initialize("Finish", hInstance, 640, 480, TRUE))
 	{
 		return 0;
 	}
